@@ -1,3 +1,10 @@
 // Themes 
-
 @import "./themes/controller.scss";
+
+// Components
+@import "./components/header.scss";
+
+// Tools
+@import "./tools/clickable.scss";
+@import "./tools/hover-darken.scss";
+@import "./tools/svg.scss"

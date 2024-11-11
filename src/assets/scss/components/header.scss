@@ -1,0 +1,15 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+
+    .header-container{
+        display: flex;
+        gap: 15px;
+
+        * {
+            text-decoration: none;
+            color: var(--text-color);
+        }
+    }
+}
