@@ -78,6 +78,14 @@ const Pie = () => {
           Produktai
         </div>
       )}
+
+      <p>
+        Netrūksta: {PIE_CHART_DATA[0].value}<br />
+        Gali trūkti: {PIE_CHART_DATA[1].value}<br />
+        Trūksta: {PIE_CHART_DATA[2].value}<br />
+        Nebėra: {PIE_CHART_DATA[3].value}<br />
+      </p>
+
     </div>
   );
 };

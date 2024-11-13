@@ -6,7 +6,9 @@ const Home = () => {
         <div className='page-container'>
             Pagrindinis
 
-            <Pie />
+            <div className="home-column">
+                <Pie />
+            </div>
         </div>
     );
 }
