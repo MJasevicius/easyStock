@@ -1,0 +1,22 @@
+// Removes white stroke around all piechart portions
+.css-1mhcdve-MuiPieArc-root{
+    stroke: none !important;
+}
+
+text{
+    fill: var(--text-color) !important;
+}
+
+.piechart-title{
+    position: absolute;
+    top: 79px;
+    left: 55px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .products-number{
+        font-size: 20px;
+    }
+}

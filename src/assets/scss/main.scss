@@ -3,8 +3,11 @@
 
 // Components
 @import "./components/header.scss";
+@import "./components/pie.scss";
 
 // Tools
 @import "./tools/clickable.scss";
 @import "./tools/hover-darken.scss";
-@import "./tools/svg.scss"
+@import "./tools/svg.scss";
+@import "./tools/containers.scss";
+@import "./tools/center.scss"

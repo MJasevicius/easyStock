@@ -1,9 +1,12 @@
 import React from 'react';
+import Pie from "../components/pie";
 
 const Home = () => {
     return (
-        <div>
+        <div className='page-container'>
             Pagrindinis
+
+            <Pie />
         </div>
     );
 }
