@@ -11,7 +11,7 @@ const PIE_CHART_DATA = [
 ];
 
 const Pie = () => {
-  const [innerRadius, setInnerRadius] = useState(45);
+  const [innerRadius, setInnerRadius] = useState(70);
   const [isTitleVisible, setIsTitleVisible] = useState(true);
   const chartRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -24,7 +24,7 @@ const Pie = () => {
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    setInnerRadius(45);
+    setInnerRadius(70);
     isMouseOverChart.current = false;
     timeoutRef.current = setTimeout(() => {
       if (!isMouseOverChart.current) {
@@ -60,15 +60,15 @@ const Pie = () => {
           {
             data: PIE_CHART_DATA,
             innerRadius: innerRadius,
-            cx: 80,
+            cx: 100,
             startAngle: -40,
             paddingAngle: 2,
             highlightScope: { fade: 'global', highlight: 'item' },
             faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
           },
         ]}
-        width={350}
-        height={150}
+        width={370}
+        height={200}
       />
       {isTitleVisible && (
         <div className="piechart-title">
@@ -78,14 +78,6 @@ const Pie = () => {
           Produktai
         </div>
       )}
-
-      <p>
-        Netrūksta: {PIE_CHART_DATA[0].value}<br />
-        Gali trūkti: {PIE_CHART_DATA[1].value}<br />
-        Trūksta: {PIE_CHART_DATA[2].value}<br />
-        Nebėra: {PIE_CHART_DATA[3].value}<br />
-      </p>
-
     </div>
   );
 };
