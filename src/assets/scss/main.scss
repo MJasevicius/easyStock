@@ -7,10 +7,15 @@
 // Components
 @import "./components/header.scss";
 @import "./components/pie.scss";
+@import "./components/important.scss";
 
-// Tools
-@import "./tools/clickable.scss";
-@import "./tools/hover-darken.scss";
-@import "./tools/svg.scss";
-@import "./tools/containers.scss";
-@import "./tools/center.scss"
+// Misc
+@import "./misc/clickable.scss";
+@import "./misc/hover-darken.scss";
+@import "./misc/svg.scss";
+@import "./misc/containers.scss";
+@import "./misc/center.scss";
+@import "./misc/titles.scss";
+@import "./misc/padding.scss";
+@import "./misc/images.scss";
+@import "./misc/scroll-bar.scss";
