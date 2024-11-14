@@ -3,6 +3,7 @@ import drawer from '../assets/svg/drawer.svg';
 import buttonCross from "../assets/svg/button-cross.svg";
 import buttonMoreOptions from "../assets/svg/button-more-options.svg";
 import buttonSuccess from "../assets/svg/button-success.svg";
+import ImportantModal from './importantModal';
 
 const mockData = [
     {
@@ -103,11 +104,27 @@ const mockData = [
     },
 ];
 
+// Sample mock data for demonstration
+const mockData2 = [
+    { ID: 1, location: 'Vilnius', remaining: 10, unit: 'kg', alert: 5, photo: 'photo1.jpg' },
+    { ID: 2, location: 'Kaunas', remaining: 15, unit: 'kg', alert: 10, photo: 'photo2.jpg' },
+    { ID: 3, location: 'Klaipėda', remaining: 20, unit: 'kg', alert: 12, photo: 'photo3.jpg' }
+];
+
 const Important = () => {
     const [showInput, setShowInput] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleDrawerClick = () => {
+        setIsModalOpen(true); // Open the modal when drawer button is clicked
+    };
 
     const handleMoreOptionsClick = (index) => {
         setShowInput((prev) => (prev === index ? null : index));
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false); // Close the modal
     };
 
     return (
@@ -116,9 +133,15 @@ const Important = () => {
                 <div className="title-small padding-0">
                     Atkrepkite dėmesį
                 </div>
-                <img className='svg clickable hover-darken' src={drawer} alt="archyvas"/>
+                <img 
+                    className='svg clickable hover-darken' 
+                    src={drawer} 
+                    alt="archyvas"
+                    onClick={handleDrawerClick} // Open modal on click
+                />
             </div>
             <hr />
+
             {mockData.map((item, index) => (
                 <React.Fragment key={index}>
                     <div className="important-row">
@@ -126,7 +149,7 @@ const Important = () => {
                             #{item.ID} / {item.location} liko {item.remaining}{item.unit} <br />
                             Įspėjimo riba - {item.alert}{item.unit}
                         </div>
-                        <img src={item.photo} alt="Item" />
+                        <img src={item.photo} alt="" className='img-preview'/>
                         <div className="buttons">
                             <img src={buttonCross} alt="" className='img-preview hover-darken clickable'/>
                             <img 
@@ -149,6 +172,10 @@ const Important = () => {
                     <hr />
                 </React.Fragment>
             ))}
+
+            {isModalOpen && (
+                <ImportantModal alerts={mockData2} onClose={closeModal} />
+            )}
         </div>
     );
 };

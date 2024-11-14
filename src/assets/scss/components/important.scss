@@ -1,6 +1,8 @@
 .important-row{
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    height: fit-content;
 
     .row-title{
         font-size: 12px;
@@ -25,8 +27,6 @@
     display: flex;
     align-items: center;
     gap: 0.5em;
-    margin-top: 0.5em;
-
     label {
         color: var(--text-color);
         font-size: 15px;
