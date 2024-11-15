@@ -1,21 +1,22 @@
 @import "./dark.scss";
 @import "./light.scss";
 
-@mixin theme($primary, $secondary, $ternary, $background, $text, $text-2) {
+@mixin theme($primary, $secondary, $ternary, $background, $text, $text-2, $border) {
   --primary-color: #{$primary};
   --secondary-color: #{$secondary};
   --ternary-color: #{$ternary};
   --background-color: #{$background};
   --text-color: #{$text};
   --text-color-2: #{$text-2};
+  --border-color: #{$border};
 }
 
 .dark-mode {
-  @include theme($primary-dark, $secondary-dark, $ternary-dark, $background-dark, $text-dark, $text-dark-2);
+  @include theme($primary-dark, $secondary-dark, $ternary-dark, $background-dark, $text-dark, $text-dark-2, $border-dark);
 }
 
 body {
-    @include theme($primary-light, $secondary-light, $ternary-light, $background-light, $text-light, $text-light-2);
+    @include theme($primary-light, $secondary-light, $ternary-light, $background-light, $text-light, $text-light-2, $border-light);
     background-color: var(--background-color);
     color: var(--text-color);
     margin: 0;

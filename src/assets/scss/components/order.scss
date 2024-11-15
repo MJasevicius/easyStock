@@ -1,4 +1,53 @@
 .order{
     width: 546px !important;
     height: 450.6px;
+
+    .order-header{
+        display: flex;
+        gap: 7px;
+
+        .order-input{
+            display: flex;
+            flex-direction: column;
+
+            label{
+                padding-left: 2px;
+                font-size: 12px;
+            }
+
+            .text-input{
+                background: #ffffff00;
+                outline: none;
+                border: 1px solid var(--border-color);
+                border-radius: 6px;
+
+                color: var(--text-color);
+            }
+        }
+
+        .order-checkbox{
+            display: flex;
+            align-items: center;
+
+            label{
+                padding-left: 2px;
+                font-size: 12px;
+            }
+        }
+
+        .order-padding{
+            padding-top: 8px;
+        }
+    }
+}
+
+.list-input{
+    width: 30px;
+
+    background: #ffffff00;
+    outline: none;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+
+    color: var(--text-color);
 }
