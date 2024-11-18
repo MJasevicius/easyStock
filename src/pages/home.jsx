@@ -18,7 +18,7 @@ const Home = () => {
                 <Pie />
                 <Important />
             </div>
-            <div className="home-column">
+            <div className="home-column middle-column">
                 <Bar />
                 <Order />
             </div>

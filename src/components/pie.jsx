@@ -11,7 +11,7 @@ const PIE_CHART_DATA = [
 ];
 
 const Pie = () => {
-  const [innerRadius, setInnerRadius] = useState(70);
+  const [innerRadius, setInnerRadius] = useState(55);
   const [isTitleVisible, setIsTitleVisible] = useState(true);
   const chartRef = useRef(null);
   const timeoutRef = useRef(null);
@@ -24,7 +24,7 @@ const Pie = () => {
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    setInnerRadius(70);
+    setInnerRadius(55);
     isMouseOverChart.current = false;
     timeoutRef.current = setTimeout(() => {
       if (!isMouseOverChart.current) {
@@ -68,7 +68,7 @@ const Pie = () => {
           },
         ]}
         width={370}
-        height={200}
+        height={160}
       />
       {isTitleVisible && (
         <div className="piechart-title">

@@ -1,6 +1,6 @@
 .order{
     width: 546px !important;
-    height: 450.6px;
+    height: 100%;
 
     .order-header{
         display: flex;
@@ -9,6 +9,8 @@
         .order-input{
             display: flex;
             flex-direction: column;
+
+            
 
             label{
                 padding-left: 2px;
@@ -22,8 +24,15 @@
                 border-radius: 6px;
 
                 color: var(--text-color);
+
+                &:disabled{
+                    color: var(--disabled);
+                    border: 1px solid var(--disabled);
+                }
             }
         }
+
+        
 
         .order-checkbox{
             display: flex;
@@ -50,4 +59,24 @@
     border-radius: 6px;
 
     color: var(--text-color);
+}
+
+.order-list {
+    overflow-y: scroll;
+    height: 250px;
+}
+
+.subtotal{
+    display: flex;
+    flex-direction: column;
+}
+
+.order-bottom{
+    display: flex;
+    justify-content: space-between;
+}
+
+.order-confirm{
+    display: flex;
+    justify-content: space-between;
 }

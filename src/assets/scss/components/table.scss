@@ -4,6 +4,11 @@
     border-collapse:collapse;
 }
 
+.overflow-scroll{
+    overflow-y: scroll;
+    height: 81vh;
+}
+
 th{
     border-bottom: 1px solid var(--border-color);
     padding: 0;

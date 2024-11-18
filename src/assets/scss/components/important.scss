@@ -18,9 +18,9 @@
 }
 
 .important{
-    overflow: scroll;
+    overflow: scroll !important;
     height: 100%;
-    overflow-x: hidden;
+    overflow-x: hidden !important;
     flex-grow: 1;
 }
 

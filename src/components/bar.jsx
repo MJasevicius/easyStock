@@ -7,7 +7,7 @@ function valueFormatter(value) {
 
 const chartSetting = {
   width: 546,
-  height: 250,
+  height: 225,
 };
 
 export default function Bar() {

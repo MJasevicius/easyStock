@@ -9,9 +9,10 @@
 .main-container{
     background-color: var(--primary-color);
     width: fit-content;
-    min-height: 250px;
+    min-height: 200px;
     min-width: 370px;
     padding: 7px;
     border-radius: 14px;
     position: relative;
+    display: block;
 }
