@@ -9,7 +9,9 @@
   --text-color: #{$text};
   --text-color-2: #{$text-2};
   --border-color: #{$border};
-  --disabled: #7c7c7c
+  --disabled: #7c7c7c;
+  --search-text-placeholder: #73705E;
+  --search-text: #a79f70;
 }
 
 .dark-mode {

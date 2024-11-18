@@ -9,3 +9,68 @@
     width: 572px !important;
     font-size: 14px;
 }
+
+.inventory-top{
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-input{
+    background: var(--ternary-color);
+    border: none;
+    outline: none;
+    height: 20px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    font-weight: 600;
+    padding-left: 7px;
+    padding-top: 3px;
+    color: var(--search-text);
+
+    ::placeholder{
+        color: var(--search-text-placeholder);
+    }
+}
+
+.magnifying-glass{
+    padding: 2px;
+    height: 20px;
+    background: var(--ternary-color);
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.search{
+    display: flex;
+}
+
+.search-bar{
+    display: flex;
+    align-items: center;
+    height: 24px;
+    gap: 5px;
+}
+
+.filters{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 60px;
+    height: 22px;
+
+    padding-left: 6px;
+    padding-right: 6px;
+    
+    border: 1px solid var(--text-color-2);
+    border-radius: 10px;
+    color: var(--text-color-2);
+
+    div{
+        height: fit-content;
+    }
+
+    img{
+        height: 10px;
+    }
+}

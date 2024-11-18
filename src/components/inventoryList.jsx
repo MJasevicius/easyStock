@@ -1,5 +1,8 @@
 import React from 'react';
 
+import magnifyingGlass from "../assets/svg/magnifying-glass.svg";
+import moreOptions from "../assets/svg/more-options.svg"
+
 const InventoryList = () => {
 
     let data = [
@@ -311,8 +314,28 @@ const InventoryList = () => {
 
     return (
         <div className='main-container inventory-inside'>
-            test
             <div className="overflow-scroll">
+                <div className="inventory-top">
+                    <div className='title-small'>
+                        Inventorius
+                    </div>
+
+                    <div className="search-bar">
+                        <div className="search ">
+                            <input type="text" placeholder="Paieška" name="searchBar" id="searchBar" className='search-input' />
+                            <img src={magnifyingGlass} alt=""  className='magnifying-glass hover-darken clickable'/>
+                        </div>
+                        <div className="filters hover-darken clickable">
+                            <div>
+                                Filtrai
+                            </div>
+                            <img src={moreOptions} alt="" />
+                        </div>
+                    </div>
+                    <div>
+
+                    </div>
+                </div>
                 <table className="goods-list">
                     <thead>
                         <tr className='table-row'>
