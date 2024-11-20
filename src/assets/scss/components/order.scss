@@ -63,7 +63,19 @@
 
 .order-list {
     overflow-y: scroll;
-    height: 250px;
+    height: 290px;
+
+    @media (min-height: 670px) {
+        height: 345px;
+    }
+
+    @media (min-height: 720px) {
+        height: 390px;
+    }
+
+    @media (min-height: 780px) {
+        height: 455px;
+    }
 }
 
 .subtotal{

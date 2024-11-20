@@ -6,7 +6,12 @@
 
 .overflow-scroll{
     overflow-y: scroll;
-    height: 81vh;
+    height: 75vh;
+
+    @media (min-height: 700px){
+        height: 78vh;
+    }
+
 }
 
 th{
@@ -30,4 +35,10 @@ td{
         width: 42px;
         
     }
+}
+
+thead {
+    position: sticky; 
+    background: var(--primary-color);
+    top: 0;
 }

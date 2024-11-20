@@ -74,3 +74,15 @@
         height: 10px;
     }
 }
+
+.inventory-bottom{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.option-button{
+    padding: 5px;
+    margin-top: 3px;
+    border: 1px solid var(--text-color);
+    border-radius: 10px;
+}

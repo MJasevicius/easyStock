@@ -314,8 +314,7 @@ const InventoryList = () => {
 
     return (
         <div className='main-container inventory-inside'>
-            <div className="overflow-scroll">
-                <div className="inventory-top">
+            <div className="inventory-top">
                     <div className='title-small'>
                         Inventorius
                     </div>
@@ -336,6 +335,7 @@ const InventoryList = () => {
 
                     </div>
                 </div>
+            <div className="overflow-scroll">
                 <table className="goods-list">
                     <thead>
                         <tr className='table-row'>
@@ -397,8 +397,21 @@ const InventoryList = () => {
                     </tbody>
                 </table>
             </div>
-            
-            test
+            <div className="inventory-bottom">
+                <div className="option-button hover-darken clickable">
+                    Pridėti į užsakymą
+                </div>
+                <div className="option-button hover-darken clickable">
+                    Redaguoti
+                </div>
+                <div className="option-button hover-darken clickable">
+                    Pašalinti
+                </div>
+                <div className="option-button hover-darken clickable">
+                Suderinti įspėjimo ribą
+                </div>
+                  
+            </div>
         </div>
     );
 }

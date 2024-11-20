@@ -19,7 +19,7 @@ const Home = () => {
                 <Important />
             </div>
             <div className="home-column middle-column">
-                <Bar />
+                {/* <Bar /> */}
                 <Order />
             </div>
             <div className="home-column inventory-list">
