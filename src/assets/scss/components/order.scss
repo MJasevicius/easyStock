@@ -6,31 +6,7 @@
         display: flex;
         gap: 7px;
 
-        .order-input{
-            display: flex;
-            flex-direction: column;
-
-            
-
-            label{
-                padding-left: 2px;
-                font-size: 12px;
-            }
-
-            .text-input{
-                background: #ffffff00;
-                outline: none;
-                border: 1px solid var(--border-color);
-                border-radius: 6px;
-
-                color: var(--text-color);
-
-                &:disabled{
-                    color: var(--disabled);
-                    border: 1px solid var(--disabled);
-                }
-            }
-        }
+        
 
         
 
@@ -91,4 +67,30 @@
 .order-confirm{
     display: flex;
     justify-content: space-between;
+}
+
+.order-input{
+    display: flex;
+    flex-direction: column;
+
+    
+
+    label{
+        padding-left: 2px;
+        font-size: 12px;
+    }
+
+    .text-input{
+        background: #ffffff00;
+        outline: none;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+
+        color: var(--text-color);
+
+        &:disabled{
+            color: var(--disabled);
+            border: 1px solid var(--disabled);
+        }
+    }
 }
