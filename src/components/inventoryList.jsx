@@ -8,6 +8,7 @@ const InventoryList = () => {
     let data = [
         {
             id: "00001",
+            dateAdded: "2024-11-21",
             location: "A01",
             name: "Siūlai",
             photo: "ABC",
@@ -21,295 +22,7 @@ const InventoryList = () => {
             price: "16",
             count: "7",
             alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
-        {
-            id: "00001",
-            location: "A01",
-            name: "Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "raudona",
-                atspalvis: "bordo",
-                storis: "12",
-                sudetis: "50% merinas, 50% vilna",
-            },
-            unit: "kg",
-            price: "16",
-            count: "7",
-            alert: "10"
-        },
+        }
     ];
 
     return (
@@ -349,6 +62,7 @@ const InventoryList = () => {
                             <th>Kaina</th>
                             <th>Kiekis</th>
                             <th>Įspėjimo riba</th>
+                            <th>Pridėjimo data</th>
                         </tr>
                     </thead>
                     <tbody className=''>
@@ -390,6 +104,9 @@ const InventoryList = () => {
                                 </td>
                                 <td>
                                     {item.alert}
+                                </td>
+                                <td>
+                                    {item.dateAdded}
                                 </td>
                             </tr>
                             )
