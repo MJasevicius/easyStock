@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
 
-const addMoreInfo = async(productID, moreInfo) => {
+export const addMoreInfo = async(productID, moreInfo) => {
     const requestBody = {
         info1: moreInfo[0] || "Not provided",
         info2: moreInfo[1] || "Not provided",

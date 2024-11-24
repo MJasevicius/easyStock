@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
 
-const addProductsToOrder = async(orderID,products) => {
+export const addProductsToOrder = async(orderID,products) => {
     const requestBody = {
         "items": products
     }
@@ -21,3 +21,5 @@ const addProductsToOrder = async(orderID,products) => {
 //     price,
 //     count
 // }]
+
+ 

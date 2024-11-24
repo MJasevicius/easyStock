@@ -1,7 +1,7 @@
 import axios from 'axios';
 const BASE_URL = 'http://localhost:3000';
 
-const updateProduct = async (productID, productData) => {
+export const updateProduct = async (productID, productData) => {
     const {
         location,
         name,

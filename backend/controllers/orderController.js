@@ -28,7 +28,7 @@ const createOrder = (req, res) => {
 const addOrderItems = (req, res) => {
     console.log(`POST /orders/${req.params.orderId}/items - Adding items to order...`);
     const { orderId } = req.params;
-    const { items } = req.body; // Expecting an array of items
+    const { items } = req.body; 
 
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Items array is required and must not be empty.' });
@@ -176,7 +176,7 @@ const getOrderInfo = (req, res) => {
 
 module.exports = {
     createOrder,
-    addOrderItem,
+    addOrderItems,
     getOrderItems,
     getOrderInfo,
 };

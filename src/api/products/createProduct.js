@@ -1,7 +1,7 @@
 import axios from 'axios';
 const BASE_URL = 'http://localhost:3000';
 
-const createProduct = async (productData) => {
+export const createProduct = async (productData) => {
     const {
         location,
         name,

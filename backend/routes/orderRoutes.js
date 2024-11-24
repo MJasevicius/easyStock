@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { 
     createOrder, 
-    getAllOrders, 
-    addOrderItem, 
+    addOrderItems, 
     getOrderItems, 
     getOrderInfo 
 } = require('../controllers/orderController');
@@ -11,11 +10,8 @@ const {
 // Create Order
 router.post('/', createOrder);
 
-// Get All Orders
-router.get('/', getAllOrders);
-
 // Add Items to Order
-router.post('/:orderId/items', addOrderItem);
+router.post('/:orderId/items', addOrderItems);
 
 // Get Items for an Order
 router.get('/:orderId/items', getOrderItems);

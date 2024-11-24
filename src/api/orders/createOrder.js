@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
 
-const createOrder = async(orderData) => {
+export const createOrder = async(orderData) => {
     const {
         comment, 
         client, 
