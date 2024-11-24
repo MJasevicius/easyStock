@@ -23,81 +23,91 @@ const createOrder = (req, res) => {
     });
 };
 
-// Get All Orders
-const getAllOrders = (req, res) => {
-    console.log('GET /orders - Fetching all orders...');
-    db.all('SELECT * FROM orders', [], (err, rows) => {
-        if (err) {
-            console.error('Error fetching orders:', err.message);
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(rows);
-    });
-};
 
 // Add Item to Order
-const addOrderItem = (req, res) => {
-    console.log(`POST /orders/${req.params.orderId}/items - Adding item to order...`);
+const addOrderItems = (req, res) => {
+    console.log(`POST /orders/${req.params.orderId}/items - Adding items to order...`);
     const { orderId } = req.params;
-    const { item_id, price, count } = req.body;
+    const { items } = req.body; // Expecting an array of items
 
-    const query = `
+    if (!Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: 'Items array is required and must not be empty.' });
+    }
+
+    const insertQuery = `
         INSERT INTO order_items (order_id, item_id, price, count) 
         VALUES (?, ?, ?, ?)
     `;
-    const values = [orderId, item_id, price, count];
 
-    db.run(query, values, function (err) {
-        if (err) {
-            console.error('Error adding item to order:', err.message);
-            return res.status(500).json({ error: err.message });
-        }
+    // Start a transaction to handle multiple inserts
+    db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
 
-        console.log(`Item added to order ID: ${orderId}`);
+        items.forEach((item) => {
+            const { item_id, price, count } = item;
+            db.run(insertQuery, [orderId, item_id, price, count], (err) => {
+                if (err) {
+                    console.error('Error adding item to order:', err.message);
+                    db.run('ROLLBACK');
+                    return res.status(500).json({ error: err.message });
+                }
+            });
+        });
 
-        // Update total_price in orders table
-        const updateTotalPriceQuery = `
-            SELECT SUM(price * count) AS total_item_price 
-            FROM order_items 
-            WHERE order_id = ?
-        `;
-
-        db.get(updateTotalPriceQuery, [orderId], (err, row) => {
+        // Commit the transaction after all items are added
+        db.run('COMMIT', (err) => {
             if (err) {
-                console.error('Error calculating total item price:', err.message);
+                console.error('Error committing transaction:', err.message);
                 return res.status(500).json({ error: err.message });
             }
 
-            // Get discount from orders table
-            const getDiscountQuery = 'SELECT discount FROM orders WHERE id = ?';
-            db.get(getDiscountQuery, [orderId], (err, order) => {
+            console.log(`Items added to order ID: ${orderId}`);
+
+            // Update total_price in orders table
+            const updateTotalPriceQuery = `
+                SELECT SUM(price * count) AS total_item_price 
+                FROM order_items 
+                WHERE order_id = ?
+            `;
+
+            db.get(updateTotalPriceQuery, [orderId], (err, row) => {
                 if (err) {
-                    console.error('Error fetching discount:', err.message);
+                    console.error('Error calculating total item price:', err.message);
                     return res.status(500).json({ error: err.message });
                 }
 
-                const discount = order ? order.discount : 0;
-                const totalItemPrice = row ? row.total_item_price : 0;
-                const finalPrice = totalItemPrice - discount;
-
-                // Update the total price with the discount applied
-                const updateTotalPriceWithDiscountQuery = `
-                    UPDATE orders 
-                    SET total_price = ? 
-                    WHERE id = ?
-                `;
-                db.run(updateTotalPriceWithDiscountQuery, [finalPrice, orderId], function (err) {
+                // Get discount from orders table
+                const getDiscountQuery = 'SELECT discount FROM orders WHERE id = ?';
+                db.get(getDiscountQuery, [orderId], (err, order) => {
                     if (err) {
-                        console.error('Error updating total price:', err.message);
+                        console.error('Error fetching discount:', err.message);
                         return res.status(500).json({ error: err.message });
                     }
-                    console.log(`Total price updated for order ID: ${orderId}`);
-                    res.status(201).json({ message: 'Item added and total price updated with discount.' });
+
+                    const discount = order ? order.discount : 0;
+                    const totalItemPrice = row ? row.total_item_price : 0;
+                    const finalPrice = totalItemPrice - discount;
+
+                    // Update the total price with the discount applied
+                    const updateTotalPriceWithDiscountQuery = `
+                        UPDATE orders 
+                        SET total_price = ? 
+                        WHERE id = ?
+                    `;
+                    db.run(updateTotalPriceWithDiscountQuery, [finalPrice, orderId], function (err) {
+                        if (err) {
+                            console.error('Error updating total price:', err.message);
+                            return res.status(500).json({ error: err.message });
+                        }
+                        console.log(`Total price updated for order ID: ${orderId}`);
+                        res.status(201).json({ message: 'Items added and total price updated with discount.' });
+                    });
                 });
             });
         });
     });
 };
+
 
 
 
@@ -166,7 +176,6 @@ const getOrderInfo = (req, res) => {
 
 module.exports = {
     createOrder,
-    getAllOrders,
     addOrderItem,
     getOrderItems,
     getOrderInfo,

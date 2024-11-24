@@ -70,31 +70,50 @@ const getProductById = (req, res) => {
     });
 };
 
-// Update Product
 const updateProduct = (req, res) => {
     console.log(`PUT /products/${req.params.id} - Updating product...`);
     const { id } = req.params;
-    const { location, name, photo, unit, price, count, alert_level } = req.body;
+    
+    const allowedFields = ['location', 'name', 'photo', 'unit', 'price', 'count', 'alert_level'];  
+    const updates = [];
+    const values = [];
+    
+    allowedFields.forEach(field => {
+        if (req.body[field] !== undefined) {
+            updates.push(`${field} = ?`);
+            values.push(req.body[field]);
+        }
+    });
 
+    if (updates.length > 0) {
+        updates.push("updated_at = CURRENT_TIMESTAMP");
+    } else {
+        return res.status(400).json({ message: 'No fields to update' });
+    }
+
+    values.push(id);
+    
     const query = `
-        UPDATE products 
-        SET location = ?, name = ?, photo = ?, unit = ?, price = ?, count = ?, alert_level = ? 
+        UPDATE products
+        SET ${updates.join(', ')}
         WHERE id = ?
     `;
-    const values = [location, name, photo, unit, price, count, alert_level, id];
-
+    
     db.run(query, values, function (err) {
         if (err) {
             console.error('Error updating product:', err.message);
-            return res.status(500).json({ error: err.message });
+            return res.status(500).json({ error: 'Internal server error, please try again later.' });
         }
-
-        if (this.changes === 0) return res.status(404).json({ message: 'Product not found.' });
-
+        if (this.changes === 0) {
+            return res.status(404).json({ message: 'Product not found.' });
+        }
+        
         console.log(`Product with ID: ${id} updated.`);
         res.status(200).json({ success: true });
     });
 };
+
+
 
 // Delete Product
 const deleteProduct = (req, res) => {
