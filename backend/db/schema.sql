@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS orders (
     client_code TEXT,
     client_pvm_code TEXT,
     keep_in_inventory BOOLEAN DEFAULT FALSE,
-    discount REAL
+    discount REAL,
+    total_price REAL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS order_items (

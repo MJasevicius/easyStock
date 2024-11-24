@@ -1,19 +1,30 @@
 const express = require('express');
 const router = express.Router();
-const { createProduct, getAllProducts } = require('../models/productModel');
+const { 
+    createProduct, 
+    getAllProducts, 
+    getProductById, 
+    updateProduct, 
+    deleteProduct, 
+    addMoreInfoToProduct 
+} = require('../controllers/productController');
 
-router.post('/', (req, res) => {
-    createProduct(req.body, (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json({ success: true, id: result.id });
-    });
-});
+// Create Product
+router.post('/', createProduct);
 
-router.get('/', (req, res) => {
-    getAllProducts((err, products) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(200).json(products);
-    });
-});
+// Get All Products
+router.get('/', getAllProducts);
+
+// Get Product by ID
+router.get('/:id', getProductById);
+
+// Update Product
+router.put('/:id', updateProduct);
+
+// Delete Product
+router.delete('/:id', deleteProduct);
+
+// Add More Info to Product
+router.post('/:id/more-info', addMoreInfoToProduct);
 
 module.exports = router;
