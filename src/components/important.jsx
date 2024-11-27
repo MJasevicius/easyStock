@@ -51,12 +51,12 @@ const Important = () => {
     <div className="main-container important">
       <div className="important-row">
         <div className="title-small padding-0">Atkrepkite dėmesį</div>
-        <img
+        {/* <img
           className="svg clickable hover-darken"
           src={drawer}
           alt="archyvas"
           onClick={handleDrawerClick}
-        />
+        /> */}
       </div>
       <hr />
       {criticalLevel.map((item, index) => (

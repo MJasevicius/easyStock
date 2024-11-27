@@ -14,6 +14,7 @@ const Pie = () => {
   const [missing, setMissing] = useState(0)
   const [innerRadius, setInnerRadius] = useState(55);
   const [isTitleVisible, setIsTitleVisible] = useState(true);
+  const [pieTitle, setPieTitle] = useState("Produktas")
   const chartRef = useRef(null);
   const timeoutRef = useRef(null);
   const isMouseOverChart = useRef(false);
@@ -41,6 +42,26 @@ const Pie = () => {
     }, 250);
   }, []);
 
+  const getPieTitle = (productsTotal) => {
+    const lastDigit = productsTotal % 10;
+    const lastTwoDigits = productsTotal % 100;
+  
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return "Produktų";
+    }
+  
+    switch (lastDigit) {
+      case 1:
+        return "Produktas";
+      case 2:
+      case 3:
+      case 4:
+        return "Produktai";
+      default:
+        return "Produktų";
+    }
+  };
+
   useEffect(() => {
     const chartElement = chartRef.current;
     if (chartElement) {
@@ -62,7 +83,12 @@ const Pie = () => {
       try {
         const response = await axios.get(`${BASE_URL}/products`);
         const products = response.data;
-        setActiveProducts(products.length);
+        const productsTotal = products.length;
+        setActiveProducts(productsTotal);
+
+        setPieTitle(getPieTitle(productsTotal))
+
+
   
         const notMissing = products.filter(
           (product) => product.count > product.alert_level
@@ -119,7 +145,7 @@ const Pie = () => {
           <div className="products-number">
             {activeProducts}
           </div>
-          Produktai
+          {pieTitle}
         </div>
       )}
     </div>
