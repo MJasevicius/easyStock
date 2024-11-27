@@ -49,6 +49,8 @@ const Pie = () => {
     }
   }, [chartRef, handleMouseEnter, handleMouseLeave]);
 
+  
+
   return (
     <div className="main-container">
       <div className="title-small">

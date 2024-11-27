@@ -1,183 +1,143 @@
-import React, { useState} from 'react';
-import drawer from '../assets/svg/drawer.svg';
-import buttonCross from "../assets/svg/button-cross.svg";
+import React, { useEffect, useState } from "react";
+import drawer from "../assets/svg/drawer.svg";
 import buttonMoreOptions from "../assets/svg/button-more-options.svg";
 import buttonSuccess from "../assets/svg/button-success.svg";
-import ImportantModal from './importantModal';
+import ImportantModal from "./importantModal";
+import axios from "axios";
+import { updateProduct } from "../api/products/updateProduct";
 
-const mockData = [
-    {
-        ID: "0001", 
-        location: "A12",
-        remaining: 15,
-        unit: "kg",
-        alert: 20, 
-        photo: "abc"
-    },
-    {
-        ID: "0002", 
-        location: "A12",
-        remaining: 150,
-        unit: "kg",
-        alert: 200, 
-        photo: "abc"
-    },
-    {
-        ID: "0001", 
-        location: "A12",
-        remaining: 15,
-        unit: "kg",
-        alert: 20, 
-        photo: "abc"
-    },
-    {
-        ID: "0002", 
-        location: "A12",
-        remaining: 150,
-        unit: "kg",
-        alert: 200, 
-        photo: "abc"
-    },
-    {
-        ID: "0001", 
-        location: "A12",
-        remaining: 15,
-        unit: "kg",
-        alert: 20, 
-        photo: "abc"
-    },
-    {
-        ID: "0002", 
-        location: "A12",
-        remaining: 150,
-        unit: "kg",
-        alert: 200, 
-        photo: "abc"
-    },
-    {
-        ID: "0001", 
-        location: "A12",
-        remaining: 15,
-        unit: "kg",
-        alert: 20, 
-        photo: "abc"
-    },
-    {
-        ID: "0002", 
-        location: "A12",
-        remaining: 150,
-        unit: "kg",
-        alert: 200, 
-        photo: "abc"
-    },
-    {
-        ID: "0001", 
-        location: "A12",
-        remaining: 15,
-        unit: "kg",
-        alert: 20, 
-        photo: "abc"
-    },
-    {
-        ID: "0002", 
-        location: "A12",
-        remaining: 150,
-        unit: "kg",
-        alert: 200, 
-        photo: "abc"
-    },
-    {
-        ID: "0001", 
-        location: "A12",
-        remaining: 15,
-        unit: "kg",
-        alert: 20, 
-        photo: "abc"
-    },
-    {
-        ID: "0002", 
-        location: "A12",
-        remaining: 150,
-        unit: "kg",
-        alert: 200, 
-        photo: "abc"
-    },
-];
-
-// Sample mock data for demonstration
-const mockData2 = [
-    { ID: 1, location: 'Vilnius', remaining: 10, unit: 'kg', alert: 5, photo: 'photo1.jpg' },
-    { ID: 2, location: 'Kaunas', remaining: 15, unit: 'kg', alert: 10, photo: 'photo2.jpg' },
-    { ID: 3, location: 'Klaipėda', remaining: 20, unit: 'kg', alert: 12, photo: 'photo3.jpg' }
-];
+const BASE_URL = "http://localhost:3000";
 
 const Important = () => {
-    const [showInput, setShowInput] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showInput, setShowInput] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [criticalLevel, setCriticalLevel] = useState([]);
+  const [inputValues, setInputValues] = useState({});
 
-    const handleDrawerClick = () => {
-        setIsModalOpen(true); // Open the modal when drawer button is clicked
+  const handleDrawerClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleMoreOptionsClick = (index) => {
+    setShowInput((prev) => (prev === index ? null : index));
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/products`);
+        const products = response.data;
+
+        console.log(response.data);
+        
+        const criticalLevel = products.filter(
+          (product) => product.count > 0 && product.count <= product.alert_level
+        );
+
+        setCriticalLevel(criticalLevel);
+      } catch (error) {
+        console.error("Error fetching products:", error.message);
+      }
     };
 
-    const handleMoreOptionsClick = (index) => {
-        setShowInput((prev) => (prev === index ? null : index));
-    };
+    fetchProducts();
+  }, []);
 
-    const closeModal = () => {
-        setIsModalOpen(false); // Close the modal
-    };
-
-    return (
-        <div className="main-container important">
-            <div className="important-row">
-                <div className="title-small padding-0">
-                    Atkrepkite dėmesį
-                </div>
-                <img 
-                    className='svg clickable hover-darken' 
-                    src={drawer} 
-                    alt="archyvas"
-                    onClick={handleDrawerClick} // Open modal on click
-                />
+  return (
+    <div className="main-container important">
+      <div className="important-row">
+        <div className="title-small padding-0">Atkrepkite dėmesį</div>
+        <img
+          className="svg clickable hover-darken"
+          src={drawer}
+          alt="archyvas"
+          onClick={handleDrawerClick}
+        />
+      </div>
+      <hr />
+      {criticalLevel.map((item, index) => (
+        <React.Fragment key={index}>
+          <div className="important-row">
+            <div className="row-title">
+              #{item.id} / {item.location} liko {item.count}
+              {item.unit} <br />
+              Įspėjimo riba - {item.alert_level}
+              {item.unit}
             </div>
-            <hr />
-
-            {mockData.map((item, index) => (
-                <React.Fragment key={index}>
-                    <div className="important-row">
-                        <div className="row-title">
-                            #{item.ID} / {item.location} liko {item.remaining}{item.unit} <br />
-                            Įspėjimo riba - {item.alert}{item.unit}
-                        </div>
-                        <img src={item.photo} alt="" className='img-preview'/>
-                        <div className="buttons">
-                            <img src={buttonCross} alt="" className='img-preview hover-darken clickable'/>
-                            <img 
-                                src={buttonMoreOptions} 
-                                alt="" 
-                                className='img-preview hover-darken clickable'
-                                onClick={() => handleMoreOptionsClick(index)}
-                            />
-                            <img src={buttonSuccess} alt="" className='img-preview hover-darken clickable'/>
-                        </div>
-                    </div>
-
-                    {showInput === index && (
-                        <div className="alert-input-container">
-                            <label>Nauja Įspėjimo riba:</label>
-                            <input type="text" placeholder="Įveskite skaičių" className="alert-input"/>
-                            <button className="save-button">Išsaugoti</button>
-                        </div>
-                    )}
-                    <hr />
-                </React.Fragment>
-            ))}
-
-            {isModalOpen && (
-                <ImportantModal alerts={mockData2} onClose={closeModal} />
-            )}
-        </div>
-    );
+            <img src={item.photo} alt="" className="img-preview" />
+            <div className="buttons">
+              <img
+                src={buttonMoreOptions}
+                alt=""
+                className="img-preview hover-darken clickable"
+                onClick={() => handleMoreOptionsClick(index)}
+              />
+              <img
+                src={buttonSuccess}
+                alt=""
+                className="img-preview hover-darken clickable"
+                onClick={() =>
+                  setCriticalLevel((prev) => {
+                    const updatedList = [...prev];
+                    updatedList.splice(index, 1);
+                    return updatedList;
+                  })
+                }
+              />
+            </div>
+          </div>
+          {showInput === index && (
+            <div className="alert-input-container">
+              <label>Nauja Įspėjimo riba:</label>
+              <input
+                type="text"
+                placeholder="Įveskite skaičių"
+                className="alert-input"
+                value={inputValues[item.id] || ""}
+                onChange={(e) =>
+                  setInputValues((prev) => ({
+                    ...prev,
+                    [item.id]: e.target.value,
+                  }))
+                }
+              />
+              <button
+                className="save-button"
+                onClick={async () => {
+                  const newValue = inputValues[item.id];
+                  if (!isNaN(newValue) && newValue.trim() !== "") {
+                    try {
+                      await updateProduct(item.id, { alert_level: newValue });
+                      setCriticalLevel((prev) =>
+                        prev.map((product) =>
+                          product.id === item.id
+                            ? { ...product, alert_level: newValue }
+                            : product
+                        )
+                      );
+                    } catch (error) {
+                      alert("Nepavyko atnaujinti įspėjimo ribos!");
+                      console.error(error);
+                    }
+                  } else {
+                    alert("Įspėjimo riba turi būti skaičius!");
+                  }
+                }}
+              >
+                Išsaugoti
+              </button>
+            </div>
+          )}
+          <hr />
+        </React.Fragment>
+      ))}
+      {isModalOpen && <ImportantModal alerts={criticalLevel} onClose={closeModal} />}
+    </div>
+  );
 };
 
 export default Important;

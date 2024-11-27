@@ -2,8 +2,12 @@ const express = require('express');
 const app = express();
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const cors = require('cors')
 const PORT = 3000;
 
+app.use(cors({
+    origin: 'http://localhost:1420', 
+  }));
 app.use(express.json());
 
 // Route Handlers
