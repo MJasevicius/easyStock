@@ -1,19 +1,20 @@
+th {
+    padding: 3px !important;
+}
 
-
-.inventory-inside{
+.inventory-inside {
     width: 100%;
     box-sizing: border-box;
     height: 733.6px;
-    width: 572px !important;
     font-size: 14px;
 }
 
-.inventory-top{
+.inventory-top {
     display: flex;
     justify-content: space-between;
 }
 
-.search-input{
+.search-input {
     background: var(--ternary-color);
     border: none;
     outline: none;
@@ -25,12 +26,12 @@
     padding-top: 3px;
     color: var(--search-text);
 
-    ::placeholder{
+    &::placeholder {
         color: var(--search-text-placeholder);
     }
 }
 
-.magnifying-glass{
+.magnifying-glass {
     padding: 2px;
     height: 20px;
     background: var(--ternary-color);
@@ -38,49 +39,79 @@
     border-bottom-right-radius: 12px;
 }
 
-.search{
+.search {
     display: flex;
 }
 
-.search-bar{
+.search-bar {
     display: flex;
     align-items: center;
     height: 24px;
     gap: 5px;
 }
 
-.filters{
+.filters {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     width: 60px;
     height: 22px;
-
-    padding-left: 6px;
-    padding-right: 6px;
-    
+    padding: 0 6px;
     border: 1px solid var(--text-color-2);
     border-radius: 10px;
     color: var(--text-color-2);
 
-    div{
+    div {
         height: fit-content;
     }
 
-    img{
+    img {
         height: 10px;
     }
 }
 
-.inventory-bottom{
+.inventory-bottom {
     display: flex;
     justify-content: space-evenly;
 }
 
-.option-button{
+.option-button {
     padding: 5px;
     margin-top: 3px;
     border: 1px solid var(--text-color);
     border-radius: 10px;
+}
+
+.more-info {
+    margin: 2px;
+}
+
+/* New styles added */
+.table-cell-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.editable-input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 3px;
+    font-size: inherit;
+    border: none;
+    outline: none;
+    background-color: #494949;
+    color: var(--text-color);
+}
+
+.goods-list td {
+    max-width: 105px; /* Adjust based on your design */
+    overflow: hidden;
+}
+
+.goods-list img {
+    max-width: 100%;
+    height: auto;
 }

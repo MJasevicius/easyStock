@@ -1,9 +1,13 @@
-const db = require('../db/database');
+const Database = require('better-sqlite3');
+const db = new Database('../db/database.db');
 
-const createOrder = (order, callback) => {
+const createOrder = (order) => {
     const query = `
         INSERT INTO orders (date, comment, client, client_code, client_pvm_code, keep_in_inventory, discount)
         VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+    const stmt = db.prepare(query);
+
     const values = [
         order.date || new Date().toISOString(),
         order.comment,
@@ -14,10 +18,9 @@ const createOrder = (order, callback) => {
         order.discount || 0,
     ];
 
-    db.run(query, values, function (err) {
-        if (err) return callback(err);
-        callback(null, { id: this.lastID });
-    });
+    const info = stmt.run(...values);
+
+    return { id: info.lastInsertRowid };
 };
 
 module.exports = { createOrder };

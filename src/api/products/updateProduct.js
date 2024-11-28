@@ -15,11 +15,11 @@ export const updateProduct = async (productID, productData) => {
     const requestBody = {
         location,
         name,
-        photo: photo || '', 
+        photo: photo || '',
         unit,
-        price: price !== undefined ? Number(price) : undefined, 
-        count: count !== undefined ? Number(count) : undefined, 
-        alert_level: alert_level !== undefined ? Number(alert_level) : undefined, 
+        price: price !== undefined ? Number(price) : undefined,
+        count: count !== undefined ? Number(count) : undefined,
+        alert_level: alert_level !== undefined ? Number(alert_level) : undefined,
     };
 
     const filteredRequestBody = Object.fromEntries(
@@ -28,7 +28,6 @@ export const updateProduct = async (productID, productData) => {
 
     try {
         const response = await axios.put(`${BASE_URL}/products/${productID}`, filteredRequestBody);
-        
         console.log('Product updated successfully:', response.data);
         return response.data;
     } catch (error) {

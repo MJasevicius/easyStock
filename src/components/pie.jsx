@@ -43,24 +43,23 @@ const Pie = () => {
   }, []);
 
   const getPieTitle = (productsTotal) => {
-    const lastDigit = productsTotal % 10;
-    const lastTwoDigits = productsTotal % 100;
+    const absTotal = Math.abs(Math.floor(productsTotal));
+    const lastDigit = absTotal % 10;
+    const lastTwoDigits = absTotal % 100;
   
-    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
-      return "Produktų";
-    }
-  
-    switch (lastDigit) {
-      case 1:
-        return "Produktas";
-      case 2:
-      case 3:
-      case 4:
-        return "Produktai";
-      default:
-        return "Produktų";
+    if (absTotal === 0) {
+      return "Produktų"; // Genitive plural for zero
+    } else if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+      return "Produktų"; // Genitive plural for numbers from 11 to 19
+    } else if (lastDigit === 1) {
+      return "Produktas"; // Nominative singular for numbers ending with 1
+    } else if (lastDigit >= 2 && lastDigit <= 9) {
+      return "Produktai"; // Nominative plural for numbers ending with 2, 3, or 4
+    } else {
+      return "Produktų"; // Genitive plural for other cases
     }
   };
+  
 
   useEffect(() => {
     const chartElement = chartRef.current;

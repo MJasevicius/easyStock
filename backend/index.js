@@ -8,7 +8,9 @@ const PORT = 3000;
 app.use(cors({
     origin: 'http://localhost:1420', 
   }));
-app.use(express.json());
+app.use(express.json({
+  limit: "500mb"
+}));
 
 // Route Handlers
 app.use('/products', productRoutes);
