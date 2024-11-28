@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchAllProducts } from '../api/products/fetchAllProducts';
 import { updateProduct } from '../api/products/updateProduct';
 import { deleteProduct } from '../api/products/deleteProduct';
+import { searchProducts } from '../api/products/searchProducts';
 
 import magnifyingGlass from "../assets/svg/magnifying-glass.svg";
 import moreOptions from "../assets/svg/more-options.svg";
@@ -12,6 +13,7 @@ const InventoryList = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedProducts, setEditedProducts] = useState({});
     const [isSaving, setIsSaving] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const triggerSelectAll = () => {
         if (selectedProducts.length === data.length) {
@@ -161,12 +163,32 @@ const InventoryList = () => {
         // Implement functionality to add products to order
     };
 
+    const handleSearch = async () => {
+        try {
+            if (searchQuery.trim() === '') {
+                const allProducts = await fetchAllProducts();
+                setData(allProducts);
+            } else {
+                const results = await searchProducts(searchQuery);
+                setData(results);
+            }
+        } catch (error) {
+            console.error('Error searching products:', error.message);
+            alert('Error searching products: ' + error.message);
+        }
+    };
+
     useEffect(() => {
-        const processData = async () => {
-            const information = await fetchAllProducts();
-            setData(information);
+        const loadData = async () => {
+            try {
+                const allProducts = await fetchAllProducts();
+                setData(allProducts);
+            } catch (error) {
+                console.error('Error fetching products:', error.message);
+                alert('Error fetching products: ' + error.message);
+            }
         };
-        processData();
+        loadData();
     }, []);
 
     return (
@@ -178,15 +200,33 @@ const InventoryList = () => {
 
                 <div className="search-bar">
                     <div className="search ">
-                        <input type="text" placeholder="Paieška" name="searchBar" id="searchBar" className='search-input' />
-                        <img src={magnifyingGlass} alt="" className='magnifying-glass hover-darken clickable' />
+                        <input
+                            type="text"
+                            placeholder="Paieška"
+                            name="searchBar"
+                            id="searchBar"
+                            className='search-input'
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSearch();
+                                }
+                            }}
+                        />
+                        <img
+                            src={magnifyingGlass}
+                            alt=""
+                            className='magnifying-glass hover-darken clickable'
+                            onClick={handleSearch}
+                        />
                     </div>
-                    <div className="filters hover-darken clickable">
+                    {/* <div className="filters hover-darken clickable">
                         <div>
                             Filtrai
                         </div>
                         <img src={moreOptions} alt="" />
-                    </div>
+                    </div> */}
                 </div>
                 <div></div>
             </div>

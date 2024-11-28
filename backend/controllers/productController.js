@@ -1,9 +1,101 @@
+// File: productController.js
+
 const path = require('path');
 const Database = require('better-sqlite3');
+const Fuse = require('fuse.js'); // Import Fuse.js
 
 const dbPath = path.join(__dirname, '..', 'db', 'database.db');
 const db = new Database(dbPath);
 
+// Create FTS table with all searchable fields (if needed)
+const createFtsTableSql = `
+    CREATE VIRTUAL TABLE IF NOT EXISTS products_fts USING fts5(
+        id UNINDEXED,
+        location,
+        name,
+        unit,
+        price,
+        count,
+        alert_level,
+        created_at,
+        info1,
+        info2,
+        info3,
+        info4,
+        info5,
+        content=''
+    );
+`;
+
+db.exec(createFtsTableSql);
+
+// Function to rebuild the FTS index (Optional)
+function rebuildFtsIndex() {
+    db.exec('DELETE FROM products_fts;');
+    const insertFtsDataSql = `
+        INSERT INTO products_fts (
+            id, location, name, unit, price, count, alert_level, created_at,
+            info1, info2, info3, info4, info5
+        )
+        SELECT
+            p.id, p.location, p.name, p.unit,
+            CAST(p.price AS TEXT), CAST(p.count AS TEXT), CAST(p.alert_level AS TEXT), p.created_at,
+            mi.info1, mi.info2, mi.info3, mi.info4, mi.info5
+        FROM products p
+        LEFT JOIN more_info mi ON p.id = mi.product_id;
+    `;
+    db.exec(insertFtsDataSql);
+}
+
+// Call this function on startup if needed
+// rebuildFtsIndex();
+
+// Helper function to update FTS index for a given product ID
+function updateFtsIndex(productId) {
+    const selectDataSql = `
+        SELECT
+            p.id, p.location, p.name, p.unit,
+            CAST(p.price AS TEXT) AS price, CAST(p.count AS TEXT) AS count,
+            CAST(p.alert_level AS TEXT) AS alert_level, p.created_at,
+            mi.info1, mi.info2, mi.info3, mi.info4, mi.info5
+        FROM products p
+        LEFT JOIN more_info mi ON p.id = mi.product_id
+        WHERE p.id = ?
+    `;
+    const data = db.prepare(selectDataSql).get(productId);
+
+    if (data) {
+        // Delete existing entry in 'products_fts' for this productId
+        const deleteFtsSql = `DELETE FROM products_fts WHERE id = ?`;
+        db.prepare(deleteFtsSql).run(productId);
+
+        // Insert new data into 'products_fts'
+        const insertFtsSql = `
+            INSERT INTO products_fts (
+                id, location, name, unit, price, count, alert_level, created_at,
+                info1, info2, info3, info4, info5
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+        db.prepare(insertFtsSql).run(
+            data.id,
+            data.location,
+            data.name,
+            data.unit,
+            data.price,
+            data.count,
+            data.alert_level,
+            data.created_at,
+            data.info1,
+            data.info2,
+            data.info3,
+            data.info4,
+            data.info5
+        );
+    }
+}
+
+// Create Product
 const createProduct = (req, res) => {
     console.log('POST /products - Creating a new product...');
     const { location, name, photo, unit, price, count, alert_level, more_info } = req.body;
@@ -32,6 +124,9 @@ const createProduct = (req, res) => {
             console.log('More info added successfully.');
         }
 
+        // Update FTS index
+        updateFtsIndex(productId);
+
         res.status(201).json({ success: true, id: productId });
     } catch (err) {
         console.error('Error creating product:', err.message);
@@ -42,7 +137,7 @@ const createProduct = (req, res) => {
 // Get All Products
 const getAllProducts = (req, res) => {
     console.log('GET /products - Fetching all products with associated more_info...');
-    
+
     const query = `
         SELECT 
             p.*, 
@@ -100,13 +195,49 @@ const getProductById = (req, res) => {
     console.log(`GET /products/${req.params.id} - Fetching product by ID...`);
     const { id } = req.params;
 
-    const query = 'SELECT * FROM products WHERE id = ?';
+    const query = `
+        SELECT 
+            p.*, 
+            mi.info1, mi.info2, mi.info3, mi.info4, mi.info5
+        FROM 
+            products p
+        LEFT JOIN 
+            more_info mi 
+        ON 
+            p.id = mi.product_id
+        WHERE 
+            p.id = ?
+    `;
     try {
         const stmt = db.prepare(query);
         const row = stmt.get(id);
         if (!row) return res.status(404).json({ message: 'Product not found.' });
 
-        res.status(200).json(row);
+        // Transform the row into a product object
+        const {
+            id: productId, location, name, photo, unit, price, count, alert_level,
+            created_at, updated_at, info1, info2, info3, info4, info5
+        } = row;
+
+        const product = {
+            id: productId,
+            location,
+            name,
+            photo,
+            unit,
+            price,
+            count,
+            alert_level,
+            created_at,
+            updated_at,
+            more_info: null
+        };
+
+        if (info1 || info2 || info3 || info4 || info5) {
+            product.more_info = { info1, info2, info3, info4, info5 };
+        }
+
+        res.status(200).json(product);
     } catch (err) {
         console.error('Error fetching product by ID:', err.message);
         res.status(500).json({ error: err.message });
@@ -152,6 +283,10 @@ const updateProduct = (req, res) => {
         }
 
         console.log(`Product with ID: ${id} updated.`);
+
+        // Update FTS index
+        updateFtsIndex(id);
+
         res.status(200).json({ success: true });
     } catch (err) {
         console.error('Error updating product:', err.message);
@@ -170,6 +305,10 @@ const deleteProduct = (req, res) => {
         const info = stmt.run(id);
 
         if (info.changes === 0) return res.status(404).json({ message: 'Product not found.' });
+
+        // Delete from FTS index
+        const deleteFtsSql = `DELETE FROM products_fts WHERE id = ?`;
+        db.prepare(deleteFtsSql).run(id);
 
         console.log(`Product with ID: ${id} deleted.`);
         res.status(200).json({ success: true });
@@ -206,6 +345,10 @@ const addMoreInfoToProduct = (req, res) => {
             updateStmt.run(...updateValues);
 
             console.log(`More info updated for product ID: ${id}`);
+
+            // Update FTS index
+            updateFtsIndex(id);
+
             res.status(200).json({ success: true });
         } else {
             // If no record exists, insert a new record
@@ -219,6 +362,10 @@ const addMoreInfoToProduct = (req, res) => {
             insertStmt.run(...insertValues);
 
             console.log(`More info added for product ID: ${id}`);
+
+            // Update FTS index
+            updateFtsIndex(id);
+
             res.status(201).json({ success: true });
         }
     } catch (err) {
@@ -227,7 +374,7 @@ const addMoreInfoToProduct = (req, res) => {
     }
 };
 
-// Search Products
+// Search Products using Fuse.js for fuzzy matching
 const searchProducts = (req, res) => {
     console.log('GET /products/search - Searching products...');
     const searchTerm = req.query.q;
@@ -235,70 +382,85 @@ const searchProducts = (req, res) => {
         return res.status(400).json({ error: 'Missing search term' });
     }
 
-    const createFtsTableSql = `
-        CREATE VIRTUAL TABLE IF NOT EXISTS products_fts USING fts5(
-            location,
-            name,
-            unit,
-            content='products',
-            content_rowid='id'
-        );
-    `;
-
     try {
-        db.exec(createFtsTableSql);
-
-        // Rebuild the FTS index
-        try {
-            db.prepare(`INSERT INTO products_fts(products_fts) VALUES('rebuild');`).run();
-        } catch (err) {
-            if (!err.message.includes('constraint failed')) {
-                throw err;
-            }
-        }
-
+        // Fetch all products with associated more_info
         const query = `
-            SELECT p.*, mi.info1, mi.info2, mi.info3, mi.info4, mi.info5
-            FROM products_fts
-            JOIN products p ON products_fts.rowid = p.id
-            LEFT JOIN more_info mi ON p.id = mi.product_id
-            WHERE products_fts MATCH ?;
+            SELECT 
+                p.*, 
+                mi.info1, mi.info2, mi.info3, mi.info4, mi.info5
+            FROM 
+                products p
+            LEFT JOIN 
+                more_info mi 
+            ON 
+                p.id = mi.product_id
         `;
-
         const stmt = db.prepare(query);
-        const rows = stmt.all(searchTerm);
+        const products = stmt.all();
 
-        const products = rows.reduce((acc, row) => {
+        // Transform products to include 'more_info' field properly
+        const transformedProducts = products.map(product => {
             const {
                 id, location, name, photo, unit, price, count,
                 alert_level, created_at, updated_at,
                 info1, info2, info3, info4, info5
-            } = row;
+            } = product;
 
-            if (!acc[id]) {
-                acc[id] = {
-                    id,
-                    location,
-                    name,
-                    photo,
-                    unit,
-                    price,
-                    count,
-                    alert_level,
-                    created_at,
-                    updated_at,
-                    more_info: null
-                };
-            }
+            return {
+                id: id.toString(), // Convert to string for searching
+                location,
+                name,
+                photo,
+                unit,
+                price: price !== null ? price.toString() : '',
+                count: count !== null ? count.toString() : '',
+                alert_level: alert_level !== null ? alert_level.toString() : '',
+                created_at: created_at ? created_at.toString() : '',
+                updated_at: updated_at ? updated_at.toString() : '',
+                more_info: {
+                    info1: info1 || '',
+                    info2: info2 || '',
+                    info3: info3 || '',
+                    info4: info4 || '',
+                    info5: info5 || ''
+                }
+            };
+        });
 
-            if (info1 || info2 || info3 || info4 || info5) {
-                acc[id].more_info = { info1, info2, info3, info4, info5 };
-            }
+        // Initialize Fuse.js with the products data
+        const fuseOptions = {
+            keys: [
+                'id',
+                'location',
+                'name',
+                'unit',
+                'price',
+                'count',
+                'alert_level',
+                'created_at',
+                'more_info.info1',
+                'more_info.info2',
+                'more_info.info3',
+                'more_info.info4',
+                'more_info.info5'
+            ],
+            threshold: 0.5, // Adjust this value to make the search less or more strict
+            includeScore: true,
+            ignoreLocation: true,
+            findAllMatches: true,
+            useExtendedSearch: true,
+            minMatchCharLength: 2,
+        };
 
-            return acc;
-        }, {});
+        const fuse = new Fuse(transformedProducts, fuseOptions);
 
-        res.status(200).json(Object.values(products));
+        // Perform the search
+        const results = fuse.search(searchTerm);
+
+        // Extract the products from the results
+        const matchedProducts = results.map(result => result.item);
+
+        res.status(200).json(matchedProducts);
     } catch (err) {
         console.error('Error during search:', err.message);
         res.status(500).json({ error: err.message });

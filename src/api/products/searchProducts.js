@@ -12,11 +12,11 @@ export const searchProducts = async (query) => {
     }
 }
 
-(async () => {
-    try {
-        const results = await searchProducts("Warehouse");
-        console.log(results);
-    } catch (error) {
-        console.error('Error during search:', error.message);
-    }
-})();
+// (async () => {
+//     try {
+//         const results = await searchProducts("Warehouse");
+//         console.log(results);
+//     } catch (error) {
+//         console.error('Error during search:', error.message);
+//     }
+// })();
