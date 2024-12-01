@@ -23,7 +23,7 @@ const Home = () => {
                 <Order />
             </div>
             <div className="home-column inventory-list">
-                <InventoryList />
+                <InventoryList enableAddToOrder={true} />
             </div>
         </div>
         </>

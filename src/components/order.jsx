@@ -58,25 +58,25 @@ const Order = () => {
         setTotal(subtotal - discount)
     }
 
-    const addItem = () => {
-        const newItem = {
-            id: "00002", // Change ID to ensure uniqueness
-            location: "B02",
-            name: "Naujas Siūlai",
-            photo: "ABC",
-            moreInfo: {
-                spalva: "mėlyna",
-                atspalvis: "turkio",
-                storis: "10",
-                sudetis: "60% medvilnė, 40% poliesteris",
-            },
-            unit: "kg",
-            price: "18",
-            count: "5",
-        };
+    // const addItem = () => {
+    //     const newItem = {
+    //         id: "00002", // Change ID to ensure uniqueness
+    //         location: "B02",
+    //         name: "Naujas Siūlai",
+    //         photo: "ABC",
+    //         moreInfo: {
+    //             spalva: "mėlyna",
+    //             atspalvis: "turkio",
+    //             storis: "10",
+    //             sudetis: "60% medvilnė, 40% poliesteris",
+    //         },
+    //         unit: "kg",
+    //         price: "18",
+    //         count: "5",
+    //     };
 
-        setData((prevData) => [...prevData, newItem]); // Update state
-    };
+    //     setData((prevData) => [...prevData, newItem]); // Update state
+    // };
 
     useEffect(() => {
         updateSubtotal();
@@ -91,7 +91,7 @@ const Order = () => {
     }, [discount, subtotal])
 
     return (
-        <div className='main-container order' onClick={addItem}>
+        <div className='main-container order'>
             Naujas užsakymas 
             <hr />
             <div className="order-header">

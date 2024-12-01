@@ -7,7 +7,7 @@ import { searchProducts } from '../api/products/searchProducts';
 import magnifyingGlass from "../assets/svg/magnifying-glass.svg";
 import moreOptions from "../assets/svg/more-options.svg";
 
-const InventoryList = () => {
+const InventoryList = ({enableAddToOrder}) => {
     const [data, setData] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
@@ -395,14 +395,14 @@ const InventoryList = () => {
                 </table>
             </div>
             <div className="inventory-bottom">
-                <div
+                {enableAddToOrder ? <div
                     className={`option-button hover-darken clickable ${
                         selectedProducts.length === 0 || isEditing ? 'disabled' : ''
                     }`}
                     onClick={!isEditing && selectedProducts.length > 0 ? handleAddToOrder : null}
                 >
                     Pridėti į užsakymą
-                </div>
+                </div> : ''}
                 <div
                     className={`option-button hover-darken clickable ${
                         selectedProducts.length === 0 ? 'disabled' : ''

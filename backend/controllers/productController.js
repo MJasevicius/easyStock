@@ -248,51 +248,51 @@ const getProductById = (req, res) => {
 const updateProduct = (req, res) => {
     console.log(`PUT /products/${req.params.id} - Updating product...`);
     const { id } = req.params;
-
+  
     const allowedFields = ['location', 'name', 'photo', 'unit', 'price', 'count', 'alert_level'];
     const updates = [];
     const values = [];
-
+  
     allowedFields.forEach(field => {
-        if (req.body[field] !== undefined) {
-            updates.push(`${field} = ?`);
-            values.push(req.body[field]);
-        }
+      if (req.body[field] !== undefined) {
+        updates.push(`${field} = ?`);
+        values.push(req.body[field]);
+      }
     });
-
+  
     if (updates.length > 0) {
-        updates.push("updated_at = CURRENT_TIMESTAMP");
+      updates.push("updated_at = CURRENT_TIMESTAMP");
     } else {
-        return res.status(400).json({ message: 'No fields to update' });
+      return res.status(400).json({ message: 'No fields to update' });
     }
-
+  
     values.push(id);
-
+  
     const query = `
-        UPDATE products
-        SET ${updates.join(', ')}
-        WHERE id = ?
+      UPDATE products
+      SET ${updates.join(', ')}
+      WHERE id = ?
     `;
-
+  
     try {
-        const stmt = db.prepare(query);
-        const info = stmt.run(...values);
-
-        if (info.changes === 0) {
-            return res.status(404).json({ message: 'Product not found.' });
-        }
-
-        console.log(`Product with ID: ${id} updated.`);
-
-        // Update FTS index
-        updateFtsIndex(id);
-
-        res.status(200).json({ success: true });
+      const stmt = db.prepare(query);
+      const info = stmt.run(...values);
+  
+      if (info.changes === 0) {
+        return res.status(404).json({ message: 'Product not found.' });
+      }
+  
+      console.log(`Product with ID: ${id} updated.`);
+  
+      // **Update FTS index**
+      updateFtsIndex(id);
+  
+      res.status(200).json({ success: true });
     } catch (err) {
-        console.error('Error updating product:', err.message);
-        res.status(500).json({ error: 'Internal server error, please try again later.' });
+      console.error('Error updating product:', err.message);
+      res.status(500).json({ error: 'Internal server error, please try again later.' });
     }
-};
+  };
 
 // Delete Product
 const deleteProduct = (req, res) => {
