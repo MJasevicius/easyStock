@@ -1,44 +1,92 @@
 import React, { useState, useEffect } from 'react';
-
+// import { addProductsToOrder, createOrder, updateProduct } from './api'; 
+import { addProductsToOrder } from '../api/orders/addProductsToOrder';
+import { createOrder } from '../api/orders/createOrder';
+import {updateProduct} from '../api/products/updateProduct'
 import buttonCross from "../assets/svg/button-cross.svg";
 import buttonSuccess from "../assets/svg/button-success.svg";
 
-
 const Order = ({ products }) => {
-    const [subtotal, setSubtotal] =useState(0)
-    const [discount, setDiscount] = useState(0)
-    const [total, setTotal] = useState(0)
+    const [subtotal, setSubtotal] = useState(0);
+    const [discount, setDiscount] = useState(0);
+    const [total, setTotal] = useState(0);
 
     const updateSubtotal = () => {
         const prices = document.getElementsByClassName("price");
         const counts = document.getElementsByClassName("count");
         let total = 0;
-        
+
         Array.from(prices).forEach((element, index) => {
-            const price = element.value ? element.value : element.placeholder;         
+            const price = element.value ? element.value : element.placeholder;
             const count = Array.from(counts)[index].value ? Array.from(counts)[index].value : Array.from(counts)[index].placeholder;
-            total += price * count
+            total += price * count;
         });
-        setSubtotal(total)
-    }
+        setSubtotal(total);
+    };
 
     const updateDiscount = () => {
         const discountElement = document.getElementById('applyDiscount');
         const discountValue = document.getElementById('discountValue');
-    
+
         if (discountElement.checked) {
             discountValue.disabled = false;
-            const discount = discountValue.value ? discountValue.value : 0; 
-            setDiscount(discount); 
+            const discount = discountValue.value ? discountValue.value : 0;
+            setDiscount(discount);
         } else {
             discountValue.disabled = true;
-            setDiscount(0)
+            setDiscount(0);
         }
-    }
+    };
 
     const updateTotal = () => {
-        setTotal(subtotal - discount)
-    }
+        setTotal(subtotal - discount);
+    };
+
+    const handleSuccessClick = async () => {
+        const orderData = {
+            comment: document.getElementById('orderInfo').value,
+            client: document.getElementById('orderCustomer').value,
+            client_code: document.getElementById('orderCustomerCode').value,
+            client_pvm_code: document.getElementById('orderPvmCode').value,
+            keep_in_inventory: document.getElementById('keepInventory').checked,
+            discount: discount,
+        };
+
+        try {
+            // Step 1: Create the order
+            const orderResponse = await createOrder(orderData);
+            const orderId = orderResponse.id;
+
+            // Step 2: Prepare product data
+            const orderProducts = products.map((product, index) => {
+                const priceInput = document.getElementsByClassName('price')[index];
+                const countInput = document.getElementsByClassName('count')[index];
+                return {
+                    id: product.id,
+                    price: priceInput.value || priceInput.placeholder,
+                    count: countInput.value || countInput.placeholder,
+                };
+            });
+
+            // Step 3: Add products to the order
+            console.log('Products:', JSON.stringify(orderProducts, null, 2));
+            
+            await addProductsToOrder(orderId, orderProducts);
+
+            // Step 4: Update inventory (if applicable)
+            if (!orderData.keep_in_inventory) {
+                for (const product of orderProducts) {
+                    const updatedCount = product.count - product.count; // Deduct the count
+                    await updateProduct(product.id, { count: updatedCount });
+                }
+            }
+
+            alert('Order successfully created!');
+        } catch (error) {
+            console.error('Error processing order:', error);
+            alert('An error occurred while processing the order. Please try again.');
+        }
+    };
 
     useEffect(() => {
         updateSubtotal();
@@ -46,11 +94,11 @@ const Order = ({ products }) => {
 
     useEffect(() => {
         updateDiscount();
-    }, [])
+    }, []);
 
     useEffect(() => {
         updateTotal();
-    }, [discount, subtotal])
+    }, [discount, subtotal]);
 
     return (
         <div className='main-container order'>
@@ -181,7 +229,7 @@ const Order = ({ products }) => {
                     <div>Viso: {total}</div>
                     <div className='order-confirm'>
                         <img src={buttonCross} alt="" className='img-preview hover-darken clickable'/>
-                        <img src={buttonSuccess} alt="" className='img-preview hover-darken clickable'/>
+                        <img src={buttonSuccess} alt="" className='img-preview hover-darken clickable' onClick={handleSuccessClick}/>
                     </div>
                 </div>
             </div>

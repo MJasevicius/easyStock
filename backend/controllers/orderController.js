@@ -54,9 +54,9 @@ const addOrderItems = (req, res) => {
     // Start a transaction to handle multiple inserts
     const insertItemsTransaction = db.transaction((items) => {
         for (const item of items) {
-            const { item_id, price, count } = item;
+            const { id, price, count } = item;
             const stmt = db.prepare(insertQuery);
-            stmt.run(orderId, item_id, price, count);
+            stmt.run(orderId, id, price, count);
         }
 
         // Update total_price in orders table

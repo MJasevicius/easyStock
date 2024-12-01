@@ -15,12 +15,3 @@ export const addProductsToOrder = async(orderID,products) => {
         throw error;
     }
 }
-
-// products = [{
-//     item_id,
-//     price,
-//     count
-// }]
-
-
- 
