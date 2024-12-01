@@ -6,6 +6,7 @@ import InventoryList from '../components/inventoryList';
 
 const Home = () => {
     const [orderProducts, setOrderProducts] = useState([]);
+    const [refresher, setRefresher] = useState(0);
 
     const handleAddToOrder = (selectedProducts) => {
         setOrderProducts((prev) => {
@@ -17,21 +18,23 @@ const Home = () => {
         });
     };
 
+    const refreshInventory = () => {
+        setRefresher(refresher ? 0 : 1)
+    };
+
     return (
         <>
+            <div className="container">Pagrindinis</div>
             <div className="container">
-                Pagrindinis
-            </div>
-            <div className='container'>
                 <div className="home-column">
                     <Pie />
                     <Important />
                 </div>
                 <div className="home-column middle-column">
-                    <Order products={orderProducts} />
+                    <Order products={orderProducts} refreshInventory={refreshInventory} />
                 </div>
                 <div className="home-column inventory-list">
-                    <InventoryList enableAddToOrder={true} onAddToOrder={handleAddToOrder} />
+                    <InventoryList enableAddToOrder={true} onAddToOrder={handleAddToOrder} refresher={refresher}/>
                 </div>
             </div>
         </>

@@ -35,7 +35,7 @@ const Important = () => {
         console.log(response.data);
         
         const criticalLevel = products.filter(
-          (product) => product.count > 0 && product.count <= product.alert_level
+          (product) => product.count <= product.alert_level
         );
 
         setCriticalLevel(criticalLevel);

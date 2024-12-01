@@ -8,20 +8,30 @@ const db = new Database(dbPath);
 // Create Order
 const createOrder = (req, res) => {
     console.log('POST /orders - Creating a new order...');
-    const { date, comment, client, client_code, client_pvm_code, keep_in_inventory, discount } = req.body;
+    const {
+        date, 
+        comment, 
+        client, 
+        client_code, 
+        client_pvm_code, 
+        keep_in_inventory, 
+        discount 
+    } = req.body;
 
     const query = `
         INSERT INTO orders (date, comment, client, client_code, client_pvm_code, keep_in_inventory, discount) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
+
+    // Ensure all fields are valid types for SQLite
     const values = [
-        date || new Date().toISOString(),
-        comment,
-        client,
-        client_code,
-        client_pvm_code,
-        keep_in_inventory,
-        discount
+        date || new Date().toISOString(),            // Default to the current date if not provided
+        comment || '',                               // Default to an empty string if not provided
+        client || '',                                // Default to an empty string if not provided
+        client_code || '',                           // Default to an empty string if not provided
+        client_pvm_code || '',                       // Default to an empty string if not provided
+        keep_in_inventory ? 1 : 0,                  // Convert boolean to 1 or 0
+        discount !== undefined ? Number(discount) : 0 // Default to 0 if not provided or invalid
     ];
 
     try {
@@ -36,6 +46,7 @@ const createOrder = (req, res) => {
     }
 };
 
+
 // Add Item to Order
 const addOrderItems = (req, res) => {
     console.log(`POST /orders/${req.params.orderId}/items - Adding items to order...`);
@@ -46,6 +57,9 @@ const addOrderItems = (req, res) => {
         return res.status(400).json({ error: 'Items array is required and must not be empty.' });
     }
 
+    const order = db.prepare('SELECT keep_in_inventory FROM orders WHERE id = ?').get(orderId);
+    const keepInInventory = order?.keep_in_inventory;
+
     const insertQuery = `
         INSERT INTO order_items (order_id, item_id, price, count) 
         VALUES (?, ?, ?, ?)
@@ -55,8 +69,28 @@ const addOrderItems = (req, res) => {
     const insertItemsTransaction = db.transaction((items) => {
         for (const item of items) {
             const { id, price, count } = item;
+
+            // Fetch the current inventory count
+            const product = db.prepare('SELECT count FROM products WHERE id = ?').get(id);
+            if (!product) {
+                throw new Error(`Product with ID ${id} not found`);
+            }
+
+            const currentInventory = product.count;
+
+            // Validate inventory if "keep_in_inventory" is not checked
+            if (!keepInInventory && count > currentInventory) {
+                throw new Error(`Not enough inventory for product ID ${id}. Available: ${currentInventory}, Requested: ${count}`);
+            }
+
             const stmt = db.prepare(insertQuery);
             stmt.run(orderId, id, price, count);
+
+            // Deduct from inventory if applicable
+            if (!keepInInventory) {
+                const updatedCount = currentInventory - count;
+                db.prepare('UPDATE products SET count = ? WHERE id = ?').run(updatedCount, id);
+            }
         }
 
         // Update total_price in orders table
@@ -90,7 +124,7 @@ const addOrderItems = (req, res) => {
         res.status(201).json({ message: 'Items added and total price updated with discount.' });
     } catch (err) {
         console.error('Error adding items to order:', err.message);
-        res.status(500).json({ error: err.message });
+        res.status(400).json({ error: err.message });
     }
 };
 

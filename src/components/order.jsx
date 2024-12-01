@@ -6,7 +6,7 @@ import {updateProduct} from '../api/products/updateProduct'
 import buttonCross from "../assets/svg/button-cross.svg";
 import buttonSuccess from "../assets/svg/button-success.svg";
 
-const Order = ({ products }) => {
+const Order = ({ products, refreshInventory }) => {
     const [subtotal, setSubtotal] = useState(0);
     const [discount, setDiscount] = useState(0);
     const [total, setTotal] = useState(0);
@@ -51,12 +51,12 @@ const Order = ({ products }) => {
             keep_in_inventory: document.getElementById('keepInventory').checked,
             discount: discount,
         };
-
+    
         try {
             // Step 1: Create the order
             const orderResponse = await createOrder(orderData);
             const orderId = orderResponse.id;
-
+    
             // Step 2: Prepare product data
             const orderProducts = products.map((product, index) => {
                 const priceInput = document.getElementsByClassName('price')[index];
@@ -67,26 +67,36 @@ const Order = ({ products }) => {
                     count: countInput.value || countInput.placeholder,
                 };
             });
-
+    
             // Step 3: Add products to the order
             console.log('Products:', JSON.stringify(orderProducts, null, 2));
             
             await addProductsToOrder(orderId, orderProducts);
-
+    
             // Step 4: Update inventory (if applicable)
             if (!orderData.keep_in_inventory) {
                 for (const product of orderProducts) {
-                    const updatedCount = product.count - product.count; // Deduct the count
+                    const productCount = parseInt(product.count);
+                    const existingCount = parseInt(products.find((p) => p.id === product.id).count);
+    
+                    if (productCount > existingCount) {
+                        alert(`Insufficient inventory for product ID ${product.id}.`);
+                        throw new Error(`Insufficient inventory for product ID ${product.id}.`);
+                    }
+    
+                    const updatedCount = existingCount - productCount; // Deduct the count
                     await updateProduct(product.id, { count: updatedCount });
                 }
             }
-
+    
             alert('Order successfully created!');
+            refreshInventory()
         } catch (error) {
             console.error('Error processing order:', error);
-            alert('An error occurred while processing the order. Please try again.');
+            alert(error.message || 'An error occurred while processing the order. Please try again.');
         }
     };
+    
 
     useEffect(() => {
         updateSubtotal();
@@ -107,18 +117,13 @@ const Order = ({ products }) => {
             <div className="order-header">
                 <div className="home-column">
                     <div className="order-input">
-                        <label htmlFor="orderId">Užsakymo ID</label>
-                        <input type="text" name="orderId" id="orderId" className='text-input'/>
-                    </div>
-
-                    <div className="order-input">
-                        <label htmlFor="orderDate">Data</label>
-                        <input type="text" name="orderDate" id="orderDate" className='text-input'/>
-                    </div>
-
-                    <div className="order-input">
                         <label htmlFor="orderInfo">Papildoma informacija</label>
                         <input type="text" name="orderInfo" id="orderInfo" className='text-input'/>
+                    </div>
+
+                    <div className="order-input">
+                        <label htmlFor="orderPvmCode">PVM mokėtojo kodas</label>
+                        <input type="text" name="orderPvmCode" id="orderPvmCode" className='text-input'/>
                     </div>
                 </div>
                 <div className="home-column">
@@ -132,10 +137,7 @@ const Order = ({ products }) => {
                         <input type="text" name="orderCustomerCode" id="orderCustomerCode" className='text-input'/>
                     </div>
 
-                    <div className="order-input">
-                        <label htmlFor="orderPvmCode">PVM mokėtojo kodas</label>
-                        <input type="text" name="orderPvmCode" id="orderPvmCode" className='text-input'/>
-                    </div>
+                    
                 </div>
                 <div className="home-column">
                     <div className="order-checkbox order-padding">
@@ -233,10 +235,6 @@ const Order = ({ products }) => {
                     </div>
                 </div>
             </div>
-
-
-
-
         </div>
     );
 }

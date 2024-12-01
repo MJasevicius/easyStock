@@ -7,7 +7,7 @@ import { searchProducts } from '../api/products/searchProducts';
 import magnifyingGlass from "../assets/svg/magnifying-glass.svg";
 import moreOptions from "../assets/svg/more-options.svg";
 
-const InventoryList = ({enableAddToOrder, onAddToOrder}) => {
+const InventoryList = ({enableAddToOrder, onAddToOrder, refresher}) => {
     const [data, setData] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
@@ -193,7 +193,7 @@ const InventoryList = ({enableAddToOrder, onAddToOrder}) => {
             }
         };
         loadData();
-    }, []);
+    }, [refresher]);
 
     return (
         <div className='main-container inventory-inside'>
