@@ -3,26 +3,8 @@ import React, { useState, useEffect } from 'react';
 import buttonCross from "../assets/svg/button-cross.svg";
 import buttonSuccess from "../assets/svg/button-success.svg";
 
-const initialData = [
-    {
-        id: "00001",
-        location: "A01",
-        name: "Siūlai",
-        photo: "ABC",
-        moreInfo: {
-            spalva: "raudona",
-            atspalvis: "bordo",
-            storis: "12",
-            sudetis: "50% merinas, 50% vilna",
-        },
-        unit: "kg",
-        price: "16",
-        count: "7",
-    },
-];
 
-const Order = () => {
-    const [data, setData] = useState(initialData);
+const Order = ({ products }) => {
     const [subtotal, setSubtotal] =useState(0)
     const [discount, setDiscount] = useState(0)
     const [total, setTotal] = useState(0)
@@ -58,29 +40,9 @@ const Order = () => {
         setTotal(subtotal - discount)
     }
 
-    // const addItem = () => {
-    //     const newItem = {
-    //         id: "00002", // Change ID to ensure uniqueness
-    //         location: "B02",
-    //         name: "Naujas Siūlai",
-    //         photo: "ABC",
-    //         moreInfo: {
-    //             spalva: "mėlyna",
-    //             atspalvis: "turkio",
-    //             storis: "10",
-    //             sudetis: "60% medvilnė, 40% poliesteris",
-    //         },
-    //         unit: "kg",
-    //         price: "18",
-    //         count: "5",
-    //     };
-
-    //     setData((prevData) => [...prevData, newItem]); // Update state
-    // };
-
     useEffect(() => {
         updateSubtotal();
-    }, [data]);
+    }, [products]);
 
     useEffect(() => {
         updateDiscount();
@@ -168,7 +130,7 @@ const Order = () => {
                             <th>Kiekis</th>
                         </tr>
                     </thead>
-                    {data.map((item,index) =>{
+                    {products.map((item,index) =>{
                         return (
                         <tr>
                             <td>
@@ -187,13 +149,12 @@ const Order = () => {
                                 <img src={item.photo} alt=""/>
                             </td>
                             <td>
-                                {Object.keys(item.moreInfo).map((atribute,index) =>{
-                                    return (
-                                        <>
-                                        {atribute}:{Object.values(item.moreInfo)[index]} <br />
-                                        </>
-                                    )
-                                })}
+                            {item.more_info && Object.keys(item.more_info).map((attribute, index) => (
+                                <div key={index}>
+                                    {attribute}: {item.more_info[attribute]} <br />
+                                </div>
+                            ))}
+
                             </td>
                             <td>
                                 {item.unit}

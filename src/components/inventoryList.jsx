@@ -7,13 +7,25 @@ import { searchProducts } from '../api/products/searchProducts';
 import magnifyingGlass from "../assets/svg/magnifying-glass.svg";
 import moreOptions from "../assets/svg/more-options.svg";
 
-const InventoryList = ({enableAddToOrder}) => {
+const InventoryList = ({enableAddToOrder, onAddToOrder}) => {
     const [data, setData] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedProducts, setEditedProducts] = useState({});
     const [isSaving, setIsSaving] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+
+    const handleAddToOrder = () => {
+        if (selectedProducts.length === 0) {
+            alert('Please select at least one product to add to the order.');
+            return;
+        }
+        const selectedProductDetails = selectedProducts.map((id) =>
+            data.find((product) => product.id === id)
+        );
+        onAddToOrder(selectedProductDetails);
+        setSelectedProducts([]);
+    };
 
     const triggerSelectAll = () => {
         if (selectedProducts.length === data.length) {
@@ -153,14 +165,6 @@ const InventoryList = ({enableAddToOrder}) => {
             console.error('Error deleting products:', error.message);
             alert('Error deleting products: ' + error.message);
         }
-    };
-
-    const handleAddToOrder = () => {
-        if (selectedProducts.length === 0) {
-            alert('Please select at least one product to add to the order.');
-            return;
-        }
-        // Implement functionality to add products to order
     };
 
     const handleSearch = async () => {
@@ -395,14 +399,16 @@ const InventoryList = ({enableAddToOrder}) => {
                 </table>
             </div>
             <div className="inventory-bottom">
-                {enableAddToOrder ? <div
+            {enableAddToOrder && (
+                <div
                     className={`option-button hover-darken clickable ${
-                        selectedProducts.length === 0 || isEditing ? 'disabled' : ''
+                        selectedProducts.length === 0 ? 'disabled' : ''
                     }`}
-                    onClick={!isEditing && selectedProducts.length > 0 ? handleAddToOrder : null}
+                    onClick={handleAddToOrder}
                 >
                     Pridėti į užsakymą
-                </div> : ''}
+                </div>
+            )}
                 <div
                     className={`option-button hover-darken clickable ${
                         selectedProducts.length === 0 ? 'disabled' : ''
