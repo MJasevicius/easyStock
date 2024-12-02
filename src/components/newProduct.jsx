@@ -1,20 +1,36 @@
 import React, { useState } from "react";
+import { createProduct } from "../api/products/createProduct";
 
 const NewProduct = () => {
   const [croppedImage, setCroppedImage] = useState(null);
   const [error, setError] = useState("");
   const [productDetails, setProductDetails] = useState([{ name: "", value: "" }]);
+  const [product, setProduct] = useState({
+    location: "",
+    name: "",
+    photo: "",
+    unit: "",
+    price: 0,
+    count: 0,
+    alert_level: 0,
+    more_info: [],
+  });
+
+  const handleProductChange = (field, value) => {
+    setProduct((prevProduct) => ({
+      ...prevProduct,
+      [field]: value,
+    }));
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-
     if (file) {
       if (!file.type.startsWith("image/")) {
         setError("Pasirinktas failas nėra paveikslėlis.");
         setCroppedImage(null);
         return;
       }
-
       setError("");
       const reader = new FileReader();
       reader.onload = () => {
@@ -27,16 +43,15 @@ const NewProduct = () => {
   const cropImage = (imageSrc) => {
     const img = new Image();
     img.onload = () => {
-      const size = Math.min(img.width, img.height); // Ensure the crop is square
+      const size = Math.min(img.width, img.height);
       const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
-
       const ctx = canvas.getContext("2d");
       ctx.drawImage(
         img,
-        (img.width - size) / 2, // Center crop horizontally
-        (img.height - size) / 2, // Center crop vertically
+        (img.width - size) / 2,
+        (img.height - size) / 2,
         size,
         size,
         0,
@@ -44,15 +59,13 @@ const NewProduct = () => {
         size,
         size
       );
-
       const croppedDataUrl = canvas.toDataURL("image/jpeg");
       setCroppedImage(croppedDataUrl);
+      handleProductChange("photo", croppedDataUrl);
     };
-
     img.onerror = () => {
       setError("Nepavyko apdoroti paveikslėlio.");
     };
-
     img.src = imageSrc;
   };
 
@@ -60,8 +73,10 @@ const NewProduct = () => {
     const updatedDetails = [...productDetails];
     updatedDetails[index][field] = value;
     setProductDetails(updatedDetails);
-    console.log(productDetails);
-    
+    handleProductChange(
+      "more_info",
+      updatedDetails.map((detail) => `${detail.name}:${detail.value}`)
+    );
   };
 
   const addDetail = () => {
@@ -73,6 +88,20 @@ const NewProduct = () => {
   const removeDetail = (index) => {
     const updatedDetails = productDetails.filter((_, i) => i !== index);
     setProductDetails(updatedDetails);
+    handleProductChange(
+      "more_info",
+      updatedDetails.map((detail) => `${detail.name}:${detail.value}`)
+    );
+  };
+
+  const submitProduct = async () => {
+    const newProduct = { ...product, photo: croppedImage };
+    try {
+      await createProduct(newProduct);
+      alert("Product successfully added!");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -81,38 +110,32 @@ const NewProduct = () => {
       <div className="product-info-holder">
         <div className="product-info">
           <div className="order-input">
-            <label htmlFor="orderID">Prekės ID</label>
-            <input
-              type="text"
-              name="orderID"
-              id="orderID"
-              className="text-input"
-            />
-          </div>
-          <div className="order-input">
             <label htmlFor="orderLocation">Prekės vieta</label>
             <input
               type="text"
               name="orderLocation"
               id="orderLocation"
+              onChange={(e) => handleProductChange("location", e.target.value)}
               className="text-input"
             />
           </div>
           <div className="order-input">
-            <label htmlFor="orderLocation">Matavimo vienetai</label>
+            <label htmlFor="orderUnits">Matavimo vienetai</label>
             <input
               type="text"
               name="orderUnits"
               id="orderUnits"
+              onChange={(e) => handleProductChange("unit", e.target.value)}
               className="text-input"
             />
           </div>
           <div className="order-input">
-            <label htmlFor="orderLocation">Prekės Kaina</label>
+            <label htmlFor="orderPrice">Prekės Kaina</label>
             <input
-              type="text"
+              type="number"
               name="orderPrice"
               id="orderPrice"
+              onChange={(e) => handleProductChange("price", parseFloat(e.target.value))}
               className="text-input"
             />
           </div>
@@ -124,6 +147,7 @@ const NewProduct = () => {
               type="text"
               name="orderName"
               id="orderName"
+              onChange={(e) => handleProductChange("name", e.target.value)}
               className="text-input"
             />
           </div>
@@ -140,20 +164,22 @@ const NewProduct = () => {
             {error && <p className="error-message">{error}</p>}
           </div>
           <div className="order-input">
-            <label htmlFor="orderName">Prekės Įspėjimo riba</label>
+            <label htmlFor="orderWarningLimit">Prekės Įspėjimo riba</label>
             <input
-              type="text"
+              type="number"
               name="orderWarningLimit"
+              onChange={(e) => handleProductChange("alert_level", parseInt(e.target.value, 10))}
               id="orderWarningLimit"
               className="text-input"
             />
           </div>
           <div className="order-input">
-            <label htmlFor="orderName">Prekės kiekis</label>
+            <label htmlFor="orderAmmount">Prekės kiekis</label>
             <input
-              type="text"
+              type="number"
               name="orderAmmount"
               id="orderAmmount"
+              onChange={(e) => handleProductChange("count", parseInt(e.target.value, 10))}
               className="text-input"
             />
           </div>
@@ -207,9 +233,9 @@ const NewProduct = () => {
           </div>
         </div>
       </div>
-      <button type="button" onClick={addDetail} className="save-button">
-                Pridėti
-              </button>
+      <button type="button" onClick={submitProduct} className="save-button">
+        Pridėti
+      </button>
     </div>
   );
 };

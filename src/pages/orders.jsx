@@ -33,6 +33,8 @@ const Orders = () => {
     };
 
     const refreshInventory = () => {
+        console.log("refreshing");
+        
         setRefresher(refresher ? 0 : 1)
     };
 

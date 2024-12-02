@@ -95,154 +95,57 @@ function updateFtsIndex(productId) {
     }
 }
 
-// Create Product
 const createProduct = (req, res) => {
-    console.log('POST /products - Creating a new product...');
     const { location, name, photo, unit, price, count, alert_level, more_info } = req.body;
-
-    const productQuery = `
-        INSERT INTO products (location, name, photo, unit, price, count, alert_level) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `;
+    const productQuery = `INSERT INTO products (location, name, photo, unit, price, count, alert_level) VALUES (?, ?, ?, ?, ?, ?, ?)`;
     const productValues = [location, name, photo, unit, price, count, alert_level];
-
     try {
-        const stmt = db.prepare(productQuery);
-        const info = stmt.run(...productValues);
-        const productId = info.lastInsertRowid;
-        console.log(`Product created with ID: ${productId}`);
-
-        if (more_info) {
-            const infoQuery = `
-                INSERT INTO more_info (product_id, info1, info2, info3, info4, info5) 
-                VALUES (?, ?, ?, ?, ?, ?)
-            `;
-            const infoValues = [productId, ...more_info];
-
-            const infoStmt = db.prepare(infoQuery);
-            infoStmt.run(...infoValues);
-            console.log('More info added successfully.');
-        }
-
-        // Update FTS index
-        updateFtsIndex(productId);
-
-        res.status(201).json({ success: true, id: productId });
+      const stmt = db.prepare(productQuery);
+      const info = stmt.run(...productValues);
+      const productId = info.lastInsertRowid;
+      if (more_info) {
+        const infoQuery = `INSERT INTO more_info (product_id, info1, info2, info3, info4, info5) VALUES (?, ?, ?, ?, ?, ?)`;
+        const paddedMoreInfo = [...more_info, null, null, null, null, null].slice(0, 5);
+        const infoStmt = db.prepare(infoQuery);
+        infoStmt.run(productId, ...paddedMoreInfo);
+      }
+      res.status(201).json({ success: true, id: productId });
     } catch (err) {
-        console.error('Error creating product:', err.message);
-        res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
-};
-
-// Get All Products
-const getAllProducts = (req, res) => {
-    console.log('GET /products - Fetching all products with associated more_info...');
-
-    const query = `
-        SELECT 
-            p.*, 
-            mi.info1, mi.info2, mi.info3, mi.info4, mi.info5
-        FROM 
-            products p
-        LEFT JOIN 
-            more_info mi 
-        ON 
-            p.id = mi.product_id
-    `;
-
+  };
+  
+  const getAllProducts = (req, res) => {
+    const query = `SELECT p.*, mi.info1, mi.info2, mi.info3, mi.info4, mi.info5 FROM products p LEFT JOIN more_info mi ON p.id = mi.product_id`;
     try {
-        const stmt = db.prepare(query);
-        const rows = stmt.all();
-
-        // Transform rows into a nested format where more_info is part of the product object
-        const products = rows.reduce((acc, row) => {
-            const { id, location, name, photo, unit, price, count, alert_level, created_at, updated_at, info1, info2, info3, info4, info5 } = row;
-
-            if (!acc[id]) {
-                acc[id] = {
-                    id,
-                    location,
-                    name,
-                    photo,
-                    unit,
-                    price,
-                    count,
-                    alert_level,
-                    created_at,
-                    updated_at,
-                    more_info: null
-                };
-            }
-
-            // Add more_info if available
-            if (info1 || info2 || info3 || info4 || info5) {
-                acc[id].more_info = { info1, info2, info3, info4, info5 };
-            }
-
-            return acc;
-        }, {});
-
-        // Convert the object to an array
-        res.status(200).json(Object.values(products));
+      const stmt = db.prepare(query);
+      const rows = stmt.all();
+      const products = rows.map((row) => ({
+        ...row,
+        more_info: [row.info1, row.info2, row.info3, row.info4, row.info5].filter(Boolean),
+      }));
+      res.status(200).json(products);
     } catch (err) {
-        console.error('Error fetching products:', err.message);
-        res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
-};
-
-// Get Product by ID
-const getProductById = (req, res) => {
-    console.log(`GET /products/${req.params.id} - Fetching product by ID...`);
+  };
+  
+  const getProductById = (req, res) => {
     const { id } = req.params;
-
-    const query = `
-        SELECT 
-            p.*, 
-            mi.info1, mi.info2, mi.info3, mi.info4, mi.info5
-        FROM 
-            products p
-        LEFT JOIN 
-            more_info mi 
-        ON 
-            p.id = mi.product_id
-        WHERE 
-            p.id = ?
-    `;
+    const query = `SELECT p.*, mi.info1, mi.info2, mi.info3, mi.info4, mi.info5 FROM products p LEFT JOIN more_info mi ON p.id = mi.product_id WHERE p.id = ?`;
     try {
-        const stmt = db.prepare(query);
-        const row = stmt.get(id);
-        if (!row) return res.status(404).json({ message: 'Product not found.' });
-
-        // Transform the row into a product object
-        const {
-            id: productId, location, name, photo, unit, price, count, alert_level,
-            created_at, updated_at, info1, info2, info3, info4, info5
-        } = row;
-
-        const product = {
-            id: productId,
-            location,
-            name,
-            photo,
-            unit,
-            price,
-            count,
-            alert_level,
-            created_at,
-            updated_at,
-            more_info: null
-        };
-
-        if (info1 || info2 || info3 || info4 || info5) {
-            product.more_info = { info1, info2, info3, info4, info5 };
-        }
-
-        res.status(200).json(product);
+      const stmt = db.prepare(query);
+      const row = stmt.get(id);
+      if (!row) return res.status(404).json({ message: 'Product not found.' });
+      const product = {
+        ...row,
+        more_info: [row.info1, row.info2, row.info3, row.info4, row.info5].filter(Boolean),
+      };
+      res.status(200).json(product);
     } catch (err) {
-        console.error('Error fetching product by ID:', err.message);
-        res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message });
     }
-};
+  };
 
 // Update Product
 const updateProduct = (req, res) => {
