@@ -18,6 +18,23 @@ const Home = () => {
         });
     };
 
+    const clearOrderProducts = () => {
+        setOrderProducts([])
+    }
+
+    const removeProducts = (productsToRemove) => {
+        setOrderProducts((prev) =>
+            prev.filter(
+                (orderProduct) =>
+                    !productsToRemove.some((product) => {
+
+                        return product.id === orderProduct.id})
+            )
+        );
+        
+    };
+    
+
     const refreshInventory = () => {
         setRefresher(refresher ? 0 : 1)
     };
@@ -31,7 +48,11 @@ const Home = () => {
                     <Important />
                 </div>
                 <div className="home-column middle-column">
-                    <Order products={orderProducts} refreshInventory={refreshInventory} />
+                    <Order 
+                    products={orderProducts} 
+                    refreshInventory={refreshInventory} 
+                    clearOrderProducts={clearOrderProducts}
+                    removeProducts={removeProducts}/>
                 </div>
                 <div className="home-column inventory-list">
                     <InventoryList enableAddToOrder={true} onAddToOrder={handleAddToOrder} refresher={refresher}/>

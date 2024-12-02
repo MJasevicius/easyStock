@@ -4,6 +4,7 @@ import InventoryList from '../components/inventoryList';
 
 const Orders = () => {
     const [orderProducts, setOrderProducts] = useState([]);
+    const [refresher, setRefresher] = useState(0);
 
     const handleAddToOrder = (selectedProducts) => {
         setOrderProducts((prev) => {
@@ -14,6 +15,27 @@ const Orders = () => {
             return [...prev, ...newProducts];
         });
     };
+
+    const clearOrderProducts = () => {
+        setOrderProducts([])
+    }
+
+    const removeProducts = (productsToRemove) => {
+        setOrderProducts((prev) =>
+            prev.filter(
+                (orderProduct) =>
+                    !productsToRemove.some((product) => {
+
+                        return product.id === orderProduct.id})
+            )
+        );
+        
+    };
+
+    const refreshInventory = () => {
+        setRefresher(refresher ? 0 : 1)
+    };
+
     return (
         <>
             <div className="container">
@@ -21,10 +43,17 @@ const Orders = () => {
             </div>
             <div className='container flex-center'>
                 <div className="home-column inventory-list">
-                    <Order products={orderProducts} />
+                    <Order 
+                        products={orderProducts} 
+                        refreshInventory={refreshInventory} 
+                        clearOrderProducts={clearOrderProducts}
+                        removeProducts={removeProducts}/>
                 </div>
                 <div className="home-column ">
-                    <InventoryList enableAddToOrder={true} onAddToOrder={handleAddToOrder} />
+                    <InventoryList 
+                        enableAddToOrder={true} 
+                        onAddToOrder={handleAddToOrder} 
+                        refresher={refresher}/>
                 </div>
             </div>
         </>
