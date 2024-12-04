@@ -15,7 +15,7 @@ export const updateProduct = async (productID, productData) => {
     const requestBody = {
         location,
         name,
-        photo: photo || '',
+        photo,
         unit,
         price: price !== undefined ? Number(price) : undefined,
         count: count !== undefined ? Number(count) : undefined,

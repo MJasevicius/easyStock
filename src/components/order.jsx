@@ -206,7 +206,7 @@ const Order = ({ products, refreshInventory, clearOrderProducts, removeProducts 
                                 <td>
                                     {item.more_info && Object.keys(item.more_info).map((attribute, index) => (
                                         <div key={index}>
-                                            {attribute}: {item.more_info[attribute]} <br />
+                                            {item.more_info[attribute]} <br />
                                         </div>
                                     ))}
                                 </td>
