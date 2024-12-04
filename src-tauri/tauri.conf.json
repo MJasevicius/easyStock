@@ -13,7 +13,7 @@
     "windows": [
       {
         "title": "easystock",
-        "minWidth": 800,
+        "minWidth": 1200,
         "minHeight": 620
       }
     ],

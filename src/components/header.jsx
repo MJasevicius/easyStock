@@ -29,8 +29,8 @@ const Header = ({version}) => {
 
             <div className="header-container">
             
-            {darkMode ? <img src={sun} onClick={toggleMode} alt="moon" className="svg moon hover-darken clickable"/> :  <img src={moon} onClick={toggleMode} alt="moon" className="svg moon hover-darken clickable"/> }
-            {darkMode ? <img src={bellDark} alt="bell" className="svg bell hover-darken clickable"/> :  <img src={bellLight} alt="bell" className="svg bell hover-darken clickable"/> }
+            {/* {darkMode ? <img src={sun} onClick={toggleMode} alt="moon" className="svg moon hover-darken clickable"/> :  <img src={moon} onClick={toggleMode} alt="moon" className="svg moon hover-darken clickable"/> }
+            {darkMode ? <img src={bellDark} alt="bell" className="svg bell hover-darken clickable"/> :  <img src={bellLight} alt="bell" className="svg bell hover-darken clickable"/> } */}
 
             </div>
 

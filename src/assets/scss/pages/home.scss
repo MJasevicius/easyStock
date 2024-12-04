@@ -2,11 +2,13 @@
     display: flex;
     flex-direction: column;
     gap:5px;
-    max-height: calc(100vh - 75px);
+    // max-height: calc(100vh - 75px);
+    height: 100%;
 }
 
 .middle-column{
-    height: 95vh;
+    height: 100%;
+    display: block !important;
 }
 
 .bar-column{

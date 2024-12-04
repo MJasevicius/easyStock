@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Pie from "../components/pie";
 import Important from "../components/important";
 import Order from '../components/order';
 import InventoryList from '../components/inventoryList';
+import useWindowSize from '../hooks/useWindowSize';
 
 const Home = () => {
     const [orderProducts, setOrderProducts] = useState([]);
-    const [refresher, setRefresher] = useState(0);
+    const [refresher, setRefresher] = useState(false);
+    const { width } = useWindowSize();
 
-    const handleAddToOrder = (selectedProducts) => {
+    const handleAddToOrder = useCallback((selectedProducts) => {
         setOrderProducts((prev) => {
             const productIds = new Set(prev.map((product) => product.id));
             const newProducts = selectedProducts.filter(
@@ -16,46 +18,49 @@ const Home = () => {
             );
             return [...prev, ...newProducts];
         });
-    };
+    }, []);
 
-    const clearOrderProducts = () => {
-        setOrderProducts([])
-    }
+    const clearOrderProducts = useCallback(() => {
+        setOrderProducts([]);
+    }, []);
 
-    const removeProducts = (productsToRemove) => {
+    const removeProducts = useCallback((productsToRemove) => {
         setOrderProducts((prev) =>
             prev.filter(
                 (orderProduct) =>
-                    !productsToRemove.some((product) => {
-
-                        return product.id === orderProduct.id})
+                    !productsToRemove.some((product) => product.id === orderProduct.id)
             )
         );
-        
-    };
-    
+    }, []);
 
-    const refreshInventory = () => {
-        setRefresher(refresher ? 0 : 1)
-    };
+    const refreshInventory = useCallback(() => {
+        setRefresher((prev) => !prev);
+    }, []);
 
     return (
         <>
             <div className="container">Pagrindinis</div>
             <div className="container">
-                <div className="home-column">
-                    <Pie />
-                    <Important />
-                </div>
+                {width >= 1500 && (
+                    <div className="home-column">
+                        <Pie />
+                        <Important />
+                    </div>
+                )}
                 <div className="home-column middle-column">
-                    <Order 
-                    products={orderProducts} 
-                    refreshInventory={refreshInventory} 
-                    clearOrderProducts={clearOrderProducts}
-                    removeProducts={removeProducts}/>
+                    <Order
+                        products={orderProducts}
+                        refreshInventory={refreshInventory}
+                        clearOrderProducts={clearOrderProducts}
+                        removeProducts={removeProducts}
+                    />
                 </div>
                 <div className="home-column inventory-list">
-                    <InventoryList enableAddToOrder={true} onAddToOrder={handleAddToOrder} refresher={refresher}/>
+                    <InventoryList
+                        enableAddToOrder={true}
+                        onAddToOrder={handleAddToOrder}
+                        refresher={refresher}
+                    />
                 </div>
             </div>
         </>
