@@ -3,17 +3,46 @@ import { fetchAllProducts } from '../api/products/fetchAllProducts';
 import { updateProduct } from '../api/products/updateProduct';
 import { deleteProduct } from '../api/products/deleteProduct';
 import { searchProducts } from '../api/products/searchProducts';
-
 import magnifyingGlass from "../assets/svg/magnifying-glass.svg";
-import moreOptions from "../assets/svg/more-options.svg";
 
-const InventoryList = ({enableAddToOrder, onAddToOrder, refresher}) => {
+const InventoryList = ({ enableAddToOrder, onAddToOrder, refresher }) => {
     const [data, setData] = useState([]);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedProducts, setEditedProducts] = useState({});
     const [isSaving, setIsSaving] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [sortOption, setSortOption] = useState('id');
+
+    const sortData = (option) => {
+        let sortedData = [...data];
+        switch (option) {
+            case 'id':
+                sortedData.sort((a, b) => a.id - b.id);
+                break;
+            case 'orderCountAsc':
+                sortedData.sort((a, b) => a.orderCount - b.orderCount);
+                break;
+            case 'orderCountDesc':
+                sortedData.sort((a, b) => b.orderCount - a.orderCount);
+                break;
+            case 'updatedAtAsc':
+                sortedData.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+                break;
+            case 'updatedAtDesc':
+                sortedData.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+                break;
+            default:
+                break;
+        }
+        setData(sortedData);
+    };
+
+    const handleSortChange = (event) => {
+        const selectedOption = event.target.value;
+        setSortOption(selectedOption);
+        sortData(selectedOption);
+    };
 
     const handleAddToOrder = () => {
         if (selectedProducts.length === 0) {
@@ -196,20 +225,17 @@ const InventoryList = ({enableAddToOrder, onAddToOrder, refresher}) => {
     }, [refresher]);
 
     return (
-        <div className='main-container inventory-inside'>
+        <div className="main-container inventory-inside">
             <div className="inventory-top">
-                <div className='title-small'>
-                    Inventorius
-                </div>
-
+                <div className="title-small">Inventorius</div>
                 <div className="search-bar">
-                    <div className="search ">
+                    <div className="search">
                         <input
                             type="text"
                             placeholder="Paieška"
                             name="searchBar"
                             id="searchBar"
-                            className='search-input'
+                            className="search-input"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onKeyDown={(e) => {
@@ -221,18 +247,27 @@ const InventoryList = ({enableAddToOrder, onAddToOrder, refresher}) => {
                         <img
                             src={magnifyingGlass}
                             alt=""
-                            className='magnifying-glass hover-darken clickable'
+                            className="magnifying-glass hover-darken clickable"
                             onClick={handleSearch}
                         />
                     </div>
-                    {/* <div className="filters hover-darken clickable">
-                        <div>
-                            Filtrai
-                        </div>
-                        <img src={moreOptions} alt="" />
-                    </div> */}
                 </div>
-                <div></div>
+                <div className="sort-dropdown">
+                    <label htmlFor="sortOptions">Rūšiavimas:</label>
+                    <select
+                        id="sortOptions"
+                        value={sortOption}
+                        onChange={handleSortChange}
+                        className="sort-select"
+                    >
+                        <option value="">Select</option>
+                        <option value="id">ID</option>
+                        <option value="orderCountAsc">Užsakymų kiekis (Didėjantis)</option>
+                        <option value="orderCountDesc">Užsakymų kiekis (Mažėjantis)</option>
+                        <option value="updatedAtAsc">Nesenai pirktos</option>
+                        <option value="updatedAtDesc">Ilgai nepirktos</option>
+                    </select>
+                </div>
             </div>
             <div className="overflow-scroll">
                 <table className="goods-list">
@@ -250,7 +285,7 @@ const InventoryList = ({enableAddToOrder, onAddToOrder, refresher}) => {
                         <col style={{ width: '150px' }} />
                     </colgroup>
                     <thead>
-                        <tr className='table-row'>
+                        <tr className="table-row">
                             <th>
                                 <input
                                     type="checkbox"
@@ -272,7 +307,7 @@ const InventoryList = ({enableAddToOrder, onAddToOrder, refresher}) => {
                             <th>Pridėjimo data</th>
                         </tr>
                     </thead>
-                    <tbody className=''>
+                    <tbody>
                         {data.map((item, index) => {
                             const isSelected = selectedProducts.includes(item.id);
                             const isEditable = isEditing && isSelected;
@@ -338,7 +373,7 @@ const InventoryList = ({enableAddToOrder, onAddToOrder, refresher}) => {
                                     </td>
                                     <td>
                                         {Object.keys(item.more_info).map((attribute, idx) => (
-                                            <div className='more-info' key={idx}>
+                                            <div className="more-info" key={idx}>
                                                 {item.more_info[attribute]}
                                             </div>
                                         ))}
@@ -399,16 +434,16 @@ const InventoryList = ({enableAddToOrder, onAddToOrder, refresher}) => {
                 </table>
             </div>
             <div className="inventory-bottom">
-            {enableAddToOrder && (
-                <div
-                    className={`option-button hover-darken clickable ${
-                        selectedProducts.length === 0 ? 'disabled' : ''
-                    }`}
-                    onClick={handleAddToOrder}
-                >
-                    Pridėti į užsakymą
-                </div>
-            )}
+                {enableAddToOrder && (
+                    <div
+                        className={`option-button hover-darken clickable ${
+                            selectedProducts.length === 0 ? 'disabled' : ''
+                        }`}
+                        onClick={handleAddToOrder}
+                    >
+                        Pridėti į užsakymą
+                    </div>
+                )}
                 <div
                     className={`option-button hover-darken clickable ${
                         selectedProducts.length === 0 ? 'disabled' : ''

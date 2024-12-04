@@ -25,7 +25,6 @@ const Header = ({version}) => {
                 <Link to="/" className="hover-darken clickable">Pagrindinis</Link>
                 <Link to="inv" className="hover-darken clickable">Inventorius</Link>
                 <Link to="orders" className="hover-darken clickable">Užsakymai</Link>
-                <div className="hover-darken clickable">Analizė</div>
             </div>
 
             <div className="header-container">
