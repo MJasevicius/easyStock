@@ -116,19 +116,46 @@ const createProduct = (req, res) => {
   };
   
   const getAllProducts = (req, res) => {
-    const query = `SELECT p.*, mi.info1, mi.info2, mi.info3, mi.info4, mi.info5 FROM products p LEFT JOIN more_info mi ON p.id = mi.product_id`;
+    console.log('GET /products - Fetching all products...');
+    const query = `
+        SELECT 
+            p.*, 
+            mi.info1, mi.info2, mi.info3, mi.info4, mi.info5 
+        FROM 
+            products p 
+        LEFT JOIN 
+            more_info mi 
+        ON 
+            p.id = mi.product_id
+    `;
+
     try {
-      const stmt = db.prepare(query);
-      const rows = stmt.all();
-      const products = rows.map((row) => ({
-        ...row,
-        more_info: [row.info1, row.info2, row.info3, row.info4, row.info5].filter(Boolean),
-      }));
-      res.status(200).json(products);
+        const stmt = db.prepare(query);
+        const rows = stmt.all();
+
+        const products = rows.map((row) => ({
+            id: row.id,
+            location: row.location,
+            name: row.name,
+            photo: row.photo,
+            unit: row.unit,
+            price: row.price,
+            count: row.count,
+            alert_level: row.alert_level,
+            created_at: row.created_at,
+            updated_at: row.updated_at,
+            orderCount: row.orderCount,
+            more_info: [row.info1, row.info2, row.info3, row.info4, row.info5].filter(Boolean),
+        }));
+
+        console.log(`Fetched ${products.length} products.`);
+        res.status(200).json(products);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+        console.error('Error fetching products:', err.message);
+        res.status(500).json({ error: err.message });
     }
-  };
+};
+
   
   const getProductById = (req, res) => {
     const { id } = req.params;

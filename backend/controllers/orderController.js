@@ -65,20 +65,17 @@ const addOrderItems = (req, res) => {
         VALUES (?, ?, ?, ?)
     `;
 
-    // Start a transaction to handle multiple inserts
     const insertItemsTransaction = db.transaction((items) => {
         for (const item of items) {
             const { id, price, count } = item;
 
-            // Fetch the current inventory count
-            const product = db.prepare('SELECT count FROM products WHERE id = ?').get(id);
+            const product = db.prepare('SELECT count, orderCount FROM products WHERE id = ?').get(id);
             if (!product) {
                 throw new Error(`Product with ID ${id} not found`);
             }
 
             const currentInventory = product.count;
 
-            // Validate inventory if "keep_in_inventory" is not checked
             if (!keepInInventory && count > currentInventory) {
                 throw new Error(`Not enough inventory for product ID ${id}. Available: ${currentInventory}, Requested: ${count}`);
             }
@@ -86,14 +83,15 @@ const addOrderItems = (req, res) => {
             const stmt = db.prepare(insertQuery);
             stmt.run(orderId, id, price, count);
 
-            // Deduct from inventory if applicable
             if (!keepInInventory) {
                 const updatedCount = currentInventory - count;
                 db.prepare('UPDATE products SET count = ? WHERE id = ?').run(updatedCount, id);
             }
+
+            const updatedOrderCount = product.orderCount + 1;
+            db.prepare('UPDATE products SET orderCount = ? WHERE id = ?').run(updatedOrderCount, id);
         }
 
-        // Update total_price in orders table
         const totalItemPriceRow = db.prepare(`
             SELECT SUM(price * count) AS total_item_price 
             FROM order_items 
@@ -102,7 +100,6 @@ const addOrderItems = (req, res) => {
 
         const totalItemPrice = totalItemPriceRow ? totalItemPriceRow.total_item_price : 0;
 
-        // Get discount from orders table
         const orderRow = db.prepare(`
             SELECT discount FROM orders WHERE id = ?
         `).get(orderId);
@@ -110,7 +107,6 @@ const addOrderItems = (req, res) => {
         const discount = orderRow ? orderRow.discount : 0;
         const finalPrice = totalItemPrice - discount;
 
-        // Update the total price with the discount applied
         db.prepare(`
             UPDATE orders 
             SET total_price = ? 
@@ -127,6 +123,7 @@ const addOrderItems = (req, res) => {
         res.status(400).json({ error: err.message });
     }
 };
+
 
 // Get All Items for an Order
 const getOrderItems = (req, res) => {

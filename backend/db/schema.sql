@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS products (
     price REAL NOT NULL,
     count INTEGER NOT NULL,
     alert_level INTEGER,
+    orderCount INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
