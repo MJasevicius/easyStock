@@ -5,6 +5,7 @@ import buttonSuccess from "../assets/svg/button-success.svg";
 import ImportantModal from "./importantModal";
 import axios from "axios";
 import { updateProduct } from "../api/products/updateProduct";
+import { json } from "react-router-dom";
 
 const BASE_URL = "http://localhost:3000";
 
@@ -12,6 +13,7 @@ const Important = () => {
   const [showInput, setShowInput] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [criticalLevel, setCriticalLevel] = useState([]);
+  const [stagnant, setStagnant] = useState([])
   const [inputValues, setInputValues] = useState({});
 
   const handleDrawerClick = () => {
@@ -31,14 +33,25 @@ const Important = () => {
       try {
         const response = await axios.get(`${BASE_URL}/products`);
         const products = response.data;
+        const now = new Date();
+        const sixMonthBeforeNow = new Date(now).setMonth(now.getMonth() - 6);
 
-        console.log(response.data);
-        
         const criticalLevel = products.filter(
           (product) => product.count <= product.alert_level
         );
 
+        const stagnantProducts = products.filter((product) => {
+          const updatedAtDate = new Date(product.updated_at);
+          return updatedAtDate < sixMonthBeforeNow; 
+        });
+
+        // console.log(`Stagnant: ${JSON.stringify(stagnantProducts)}`);
+        
+
         setCriticalLevel(criticalLevel);
+        setStagnant(stagnantProducts);
+        console.log(stagnant);
+        
       } catch (error) {
         console.error("Error fetching products:", error.message);
       }
@@ -59,6 +72,8 @@ const Important = () => {
         /> */}
       </div>
       <hr />
+      
+
       {criticalLevel.map((item, index) => (
         <React.Fragment key={index}>
           <div className="important-row">
@@ -135,6 +150,19 @@ const Important = () => {
           <hr />
         </React.Fragment>
       ))}
+
+    {stagnant.map((item, index) => (
+            <React.Fragment key={index}>
+              <div className="important-row">
+                <div className="row-title">
+                  #{item.id} / {item.location} neparduotas jau virš 6 mėnesių!
+                </div>
+                <img src={item.photo} alt="" className="img-preview" />
+              </div>
+              <hr />
+
+            </React.Fragment>
+          ))}
       {isModalOpen && <ImportantModal alerts={criticalLevel} onClose={closeModal} />}
     </div>
   );
