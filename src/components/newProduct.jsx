@@ -237,7 +237,7 @@ const NewProduct = () => {
         </div>
       </div>
       <button type="button" onClick={submitProduct} className="save-button">
-        Pridėti
+        Pridėti produktą
       </button>
     </div>
   );
