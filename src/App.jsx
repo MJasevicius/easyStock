@@ -5,6 +5,16 @@ import Header from "./components/header";
 import Orders from "./pages/orders.jsx";
 
 function App() {
+  const root = document.documentElement;
+  
+  window.addEventListener('resize', () => {
+    root.style.setProperty('--screen-x', `${window.innerWidth}px`);
+    root.style.setProperty('--screen-y', `${window.innerHeight}px`);
+  });
+
+  root.style.setProperty('--screen-x', `${window.innerWidth}px`);
+  root.style.setProperty('--screen-y', `${window.innerHeight}px`);
+
 
   return (
     <BrowserRouter>

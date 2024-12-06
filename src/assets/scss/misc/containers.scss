@@ -9,7 +9,7 @@
 .main-container{
     background-color: var(--primary-color);
     width: fit-content;
-    min-height: 200px;
+    // min-height: 200px;
     min-width: 370px;
     padding: 7px;
     border-radius: 14px;
@@ -17,7 +17,7 @@
     display: block;
 }
 
-.new-product-container{
+.ct-container{
     width: 930px;
     display: flex;
     flex-direction: column;

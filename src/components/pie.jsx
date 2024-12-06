@@ -119,7 +119,7 @@ const Pie = () => {
   
 
   return (
-    <div className="main-container">
+    <div className="main-container piechart">
       <div className="title-small">
         Prekių likutis
       </div>

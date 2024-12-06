@@ -3,11 +3,20 @@
     flex-direction: column;
     gap:5px;
     // max-height: calc(100vh - 75px);
-    height: 100%;
+    height: calc(var(--screen-y) - 80px);  
+}
+
+
+.column-regular{
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+    // max-height: calc(100vh - 75px);
+    height: 100%; 
 }
 
 .middle-column{
-    height: 100%;
+      
     display: block !important;
 }
 

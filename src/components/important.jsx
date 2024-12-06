@@ -40,14 +40,15 @@ const Important = () => {
           (product) => product.count <= product.alert_level
         );
 
-        const stagnantProducts = products.filter((product) => {
+        let stagnantProducts = products.filter((product) => {
           const updatedAtDate = new Date(product.updated_at);
-          return updatedAtDate < sixMonthBeforeNow; 
+          return updatedAtDate < now; 
         });
 
         // console.log(`Stagnant: ${JSON.stringify(stagnantProducts)}`);
         
-
+        stagnantProducts = [...stagnantProducts, ...stagnantProducts]
+        stagnantProducts = [...stagnantProducts, ...stagnantProducts]
         setCriticalLevel(criticalLevel);
         setStagnant(stagnantProducts);
         console.log(stagnant);

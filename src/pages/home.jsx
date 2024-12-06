@@ -41,19 +41,18 @@ const Home = () => {
         <>
             <div className="container">Pagrindinis</div>
             <div className="container">
-                {width >= 1500 && (
+                {width >= 1485 && (
                     <div className="home-column">
                         <Pie />
                         <Important />
                     </div>
                 )}
-                <div className="home-column middle-column">
-                    <Order
-                        products={orderProducts}
-                        refreshInventory={refreshInventory}
+                <div className="home-column inventory-list">
+                    <Order 
+                        products={orderProducts} 
+                        refreshInventory={refreshInventory} 
                         clearOrderProducts={clearOrderProducts}
-                        removeProducts={removeProducts}
-                    />
+                        removeProducts={removeProducts}/>
                 </div>
                 <div className="home-column inventory-list">
                     <InventoryList

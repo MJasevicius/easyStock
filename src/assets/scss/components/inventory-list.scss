@@ -4,9 +4,12 @@ th {
 
 .inventory-inside {
     width: 100%;
-    box-sizing: border-box;
+    // box-sizing: border-box;
     height: 100%;
     font-size: 14px;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .inventory-top {

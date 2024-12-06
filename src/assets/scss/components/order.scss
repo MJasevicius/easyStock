@@ -1,14 +1,13 @@
 .order{
     width: 546px !important;
     height: 100%;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
 
     .order-header{
         display: flex;
         gap: 7px;
-
-        
-
-        
 
         .order-checkbox{
             display: flex;
@@ -43,19 +42,6 @@
 
 .order-list {
     overflow-y: scroll;
-    height: 290px;
-
-    @media (min-height: 670px) {
-        height: 345px;
-    }
-
-    @media (min-height: 720px) {
-        height: 390px;
-    }
-
-    @media (min-height: 780px) {
-        height: 455px;
-    }
 }
 
 .subtotal{

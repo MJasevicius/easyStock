@@ -108,6 +108,7 @@ const NewProduct = () => {
     <div className="main-container new-product-container">
       <div className="title-small">Naujas produktas</div>
       <div className="product-info-holder">
+        <div>
         <div className="product-info">
           <div className="order-input">
             <label htmlFor="orderLocation">Prekės vieta</label>
@@ -151,18 +152,7 @@ const NewProduct = () => {
               className="text-input"
             />
           </div>
-          <div className="order-input">
-            <label htmlFor="productImage">Prekės nuotrauka</label>
-            <input
-              type="file"
-              name="productImage"
-              id="productImage"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="file-input"
-            />
-            {error && <p className="error-message">{error}</p>}
-          </div>
+          
           <div className="order-input">
             <label htmlFor="orderWarningLimit">Prekės Įspėjimo riba</label>
             <input
@@ -183,6 +173,18 @@ const NewProduct = () => {
               className="text-input"
             />
           </div>
+          <div className="order-input">
+            <label htmlFor="productImage">Prekės nuotrauka</label>
+            <input
+              type="file"
+              name="productImage"
+              id="productImage"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="file-input"
+            />
+            {error && <p className="error-message">{error}</p>}
+          </div>
         </div>
         <div className="product-info">
           {croppedImage && (
@@ -196,6 +198,7 @@ const NewProduct = () => {
               </div>
             </div>
           )}
+        </div>
         </div>
         <div className="product-info">
           <div className="product-details">

@@ -116,126 +116,131 @@ const Order = ({ products, refreshInventory, clearOrderProducts, removeProducts 
 
     return (
         <div className='main-container order'>
-            Naujas užsakymas 
-            <hr />
-            <div className="order-header">
-                <div className="home-column">
-                    <div className="order-input">
-                        <label htmlFor="orderInfo">Papildoma informacija</label>
-                        <input type="text" name="orderInfo" id="orderInfo" className='text-input'/>
-                    </div>
-                    <div className="order-input">
-                        <label htmlFor="orderPvmCode">PVM mokėtojo kodas</label>
-                        <input type="text" name="orderPvmCode" id="orderPvmCode" className='text-input'/>
-                    </div>
-                </div>
-                <div className="home-column">
-                    <div className="order-input">
-                        <label htmlFor="orderCustomer">Klientas</label>
-                        <input type="text" name="orderCustomer" id="orderCustomer" className='text-input'/>
-                    </div>
-                    <div className="order-input">
-                        <label htmlFor="orderCustomerCode">Įmonės arba ind. veiklos kodas</label>
-                        <input type="text" name="orderCustomerCode" id="orderCustomerCode" className='text-input'/>
-                    </div>
-                </div>
-                <div className="home-column">
-                    <div className="order-checkbox order-padding">
-                        <input type="checkbox" name="keepInventory" id="keepInventory" />
-                        <label htmlFor="keepInventory">Neišimti iš inventoriaus</label>
-                    </div>
-                    <div className="order-input">
-                        <div className="order-checkbox">
-                            <input type="checkbox" name="applyDiscount" id="applyDiscount" onChange={updateDiscount}/>
-                            <label htmlFor="applyDiscount">Taikyti nuolaidą</label>
+            <div>
+                Naujas užsakymas 
+                <hr />
+                <div className="order-header">
+                    <div className="column-regular">
+                        <div className="order-input">
+                            <label htmlFor="orderInfo">Papildoma informacija</label>
+                            <input type="text" name="orderInfo" id="orderInfo" className='text-input'/>
                         </div>
-                        <input type="text" name="discountValue" id="discountValue" className='text-input' onBlur={updateDiscount}/>
+                        <div className="order-input">
+                            <label htmlFor="orderPvmCode">PVM mokėtojo kodas</label>
+                            <input type="text" name="orderPvmCode" id="orderPvmCode" className='text-input'/>
+                        </div>
+                    </div>
+                    <div className="column-regular">
+                        <div className="order-input">
+                            <label htmlFor="orderCustomer">Klientas</label>
+                            <input type="text" name="orderCustomer" id="orderCustomer" className='text-input'/>
+                        </div>
+                        <div className="order-input">
+                            <label htmlFor="orderCustomerCode">Įmonės arba ind. veiklos kodas</label>
+                            <input type="text" name="orderCustomerCode" id="orderCustomerCode" className='text-input'/>
+                        </div>
+                    </div>
+                    <div className="column-regular">
+                        <div className="order-checkbox order-padding">
+                            <input type="checkbox" name="keepInventory" id="keepInventory" />
+                            <label htmlFor="keepInventory">Neišimti iš inventoriaus</label>
+                        </div>
+                        <div className="order-input">
+                            <div className="order-checkbox">
+                                <input type="checkbox" name="applyDiscount" id="applyDiscount" onChange={updateDiscount}/>
+                                <label htmlFor="applyDiscount">Taikyti nuolaidą</label>
+                            </div>
+                            <input type="text" name="discountValue" id="discountValue" className='text-input' onBlur={updateDiscount}/>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <hr />
-            <div className="center">
-                Užsakymo turinys
-            </div>
-            <div className="order-list">
-                <div className='remove hover-darken clickable' onClick={() => {
-                    const productsToRemove = products.filter((product) =>
-                        selectedProducts.includes(product.id)
-                    );
-                    removeProducts(productsToRemove);
-                    setSelectedProducts([]);
-                }}>
-                    pašalinti
+                <hr />
+                <div className="center">
+                    Užsakymo turinys
                 </div>
-                <table className='goods-list'>
-                    <thead>
-                        <tr className='table-row'>
-                            <th>
-                                <input
-                                    type="checkbox"
-                                    name="checkAll"
-                                    id="checkAll"
-                                    onChange={toggleAllSelections}
-                                    checked={selectedProducts.length === products.length}
-                                />
-                            </th>
-                            <th>ID</th>
-                            <th>Vieta</th>
-                            <th>Pavadinimas</th>
-                            <th>Nuotrauka</th>
-                            <th>Plati informacija</th>
-                            <th>Mat. vnt.</th>
-                            <th>Kaina</th>
-                            <th>Kiekis</th>
-                        </tr>
-                    </thead>
-                    {products.map((item, index) => {
-                        return (
-                            <tr key={index}>
-                                <td>
+                <div className="order-list">
+                    <div className='remove hover-darken clickable' onClick={() => {
+                        const productsToRemove = products.filter((product) =>
+                            selectedProducts.includes(product.id)
+                        );
+                        removeProducts(productsToRemove);
+                        setSelectedProducts([]);
+                    }}>
+                        pašalinti
+                    </div>
+                    <table className='goods-list'>
+                        <thead>
+                            <tr className='table-row'>
+                                <th>
                                     <input
                                         type="checkbox"
-                                        onChange={() => toggleProductSelection(item.id)}
-                                        checked={selectedProducts.includes(item.id)}
+                                        name="checkAll"
+                                        id="checkAll"
+                                        onChange={toggleAllSelections}
+                                        checked={selectedProducts.length === products.length}
                                     />
-                                </td>
-                                <td>{item.id}</td>
-                                <td>{item.location}</td>
-                                <td>{item.name}</td>
-                                <td><img src={item.photo} alt=""/></td>
-                                <td>
-                                    {item.more_info && Object.keys(item.more_info).map((attribute, index) => (
-                                        <div key={index}>
-                                            {item.more_info[attribute]} <br />
-                                        </div>
-                                    ))}
-                                </td>
-                                <td>{item.unit}</td>
-                                <td>
-                                    <input type="text" className='list-input price' placeholder={item.price} onBlur={updateSubtotal}/>
-                                </td>
-                                <td>
-                                    <input type="text" className='list-input count' placeholder={item.count} onBlur={updateSubtotal}/>
-                                </td>
+                                </th>
+                                <th>ID</th>
+                                <th>Vieta</th>
+                                <th>Pavadinimas</th>
+                                <th>Nuotrauka</th>
+                                <th>Plati informacija</th>
+                                <th>Mat. vnt.</th>
+                                <th>Kaina</th>
+                                <th>Kiekis</th>
                             </tr>
-                        );
-                    })}
-                </table>
-            </div>
-            <hr />
-            <div className="order-bottom">
-                <div className="subtotal">
-                    <div>Tarpinė kaina: {subtotal}</div>
-                    <div>Nuolaida: {discount}</div>
+                        </thead>
+                        {products.map((item, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            onChange={() => toggleProductSelection(item.id)}
+                                            checked={selectedProducts.includes(item.id)}
+                                        />
+                                    </td>
+                                    <td>{item.id}</td>
+                                    <td>{item.location}</td>
+                                    <td>{item.name}</td>
+                                    <td><img src={item.photo} alt=""/></td>
+                                    <td>
+                                        {item.more_info && Object.keys(item.more_info).map((attribute, index) => (
+                                            <div key={index}>
+                                                {item.more_info[attribute]} <br />
+                                            </div>
+                                        ))}
+                                    </td>
+                                    <td>{item.unit}</td>
+                                    <td>
+                                        <input type="text" className='list-input price' placeholder={item.price} onBlur={updateSubtotal}/>
+                                    </td>
+                                    <td>
+                                        <input type="text" className='list-input count' placeholder={item.count} onBlur={updateSubtotal}/>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </table>
                 </div>
-                <div className="total">
-                    <div>Viso: {total}</div>
-                    <div className='order-confirm'>
-                        <img src={buttonCross} alt="" className='img-preview hover-darken clickable' onClick={removeAll}/>
-                        <img src={buttonSuccess} alt="" className='img-preview hover-darken clickable' onClick={handleSuccessClick}/>
+            </div>
+            <div>
+                <hr />
+                <div className="order-bottom">
+                    <div className="subtotal">
+                        <div>Tarpinė kaina: {subtotal}</div>
+                        <div>Nuolaida: {discount}</div>
+                    </div>
+                    <div className="total">
+                        <div>Viso: {total}</div>
+                        <div className='order-confirm'>
+                            <img src={buttonCross} alt="" className='img-preview hover-darken clickable' onClick={removeAll}/>
+                            <img src={buttonSuccess} alt="" className='img-preview hover-darken clickable' onClick={handleSuccessClick}/>
+                        </div>
                     </div>
                 </div>
             </div>
+            
         </div>
     );
 };

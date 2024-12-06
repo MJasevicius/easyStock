@@ -226,212 +226,214 @@ const InventoryList = ({ enableAddToOrder, onAddToOrder, refresher }) => {
 
     return (
         <div className="main-container inventory-inside">
-            <div className="inventory-top">
-                <div className="title-small">Inventorius</div>
-                <div className="search-bar">
-                    <div className="search">
-                        <input
-                            type="text"
-                            placeholder="Paieška"
-                            name="searchBar"
-                            id="searchBar"
-                            className="search-input"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    handleSearch();
-                                }
-                            }}
-                        />
-                        <img
-                            src={magnifyingGlass}
-                            alt=""
-                            className="magnifying-glass hover-darken clickable"
-                            onClick={handleSearch}
-                        />
+            <div>
+                <div className="inventory-top">
+                    <div className="title-small">Inventorius</div>
+                    <div className="search-bar">
+                        <div className="search">
+                            <input
+                                type="text"
+                                placeholder="Paieška"
+                                name="searchBar"
+                                id="searchBar"
+                                className="search-input"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        handleSearch();
+                                    }
+                                }}
+                            />
+                            <img
+                                src={magnifyingGlass}
+                                alt=""
+                                className="magnifying-glass hover-darken clickable"
+                                onClick={handleSearch}
+                            />
+                        </div>
+                    </div>
+                    <div className="sort-dropdown">
+                        <label htmlFor="sortOptions">Rūšiavimas:</label>
+                        <select
+                            id="sortOptions"
+                            value={sortOption}
+                            onChange={handleSortChange}
+                            className="sort-select"
+                        >
+                            <option value="">Select</option>
+                            <option value="id">ID</option>
+                            <option value="orderCountAsc">Užsakymų kiekis (Didėjantis)</option>
+                            <option value="orderCountDesc">Užsakymų kiekis (Mažėjantis)</option>
+                            <option value="updatedAtAsc">Nesenai pirktos</option>
+                            <option value="updatedAtDesc">Ilgai nepirktos</option>
+                        </select>
                     </div>
                 </div>
-                <div className="sort-dropdown">
-                    <label htmlFor="sortOptions">Rūšiavimas:</label>
-                    <select
-                        id="sortOptions"
-                        value={sortOption}
-                        onChange={handleSortChange}
-                        className="sort-select"
-                    >
-                        <option value="">Select</option>
-                        <option value="id">ID</option>
-                        <option value="orderCountAsc">Užsakymų kiekis (Didėjantis)</option>
-                        <option value="orderCountDesc">Užsakymų kiekis (Mažėjantis)</option>
-                        <option value="updatedAtAsc">Nesenai pirktos</option>
-                        <option value="updatedAtDesc">Ilgai nepirktos</option>
-                    </select>
-                </div>
-            </div>
-            <div className="overflow-scroll">
-                <table className="goods-list">
-                    <colgroup>
-                        <col style={{ width: '40px' }} />
-                        <col style={{ width: '60px' }} />
-                        <col style={{ width: '100px' }} />
-                        <col style={{ width: '150px' }} />
-                        <col style={{ width: '80px' }} />
-                        <col style={{ width: '200px' }} />
-                        <col style={{ width: '80px' }} />
-                        <col style={{ width: '80px' }} />
-                        <col style={{ width: '80px' }} />
-                        <col style={{ width: '100px' }} />
-                        <col style={{ width: '150px' }} />
-                    </colgroup>
-                    <thead>
-                        <tr className="table-row">
-                            <th>
-                                <input
-                                    type="checkbox"
-                                    name="checkAll"
-                                    id="checkAll"
-                                    onChange={triggerSelectAll}
-                                    checked={selectedProducts.length === data.length && data.length > 0}
-                                />
-                            </th>
-                            <th>ID</th>
-                            <th>Vieta</th>
-                            <th>Pavadinimas</th>
-                            <th>Nuotrauka</th>
-                            <th>Plati informacija</th>
-                            <th>Mat. vnt.</th>
-                            <th>Kaina</th>
-                            <th>Kiekis</th>
-                            <th>Įspėjimo riba</th>
-                            <th>Pridėjimo data</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((item, index) => {
-                            const isSelected = selectedProducts.includes(item.id);
-                            const isEditable = isEditing && isSelected;
-                            return (
-                                <tr key={index}>
-                                    <td>
-                                        <input
-                                            type="checkbox"
-                                            checked={isSelected}
-                                            onChange={() => handleCheckboxChange(item.id)}
-                                        />
-                                    </td>
-                                    <td>{item.id}</td>
-                                    <td>
-                                        {isEditable ? (
+                <div className="overflow-scroll">
+                    <table className="goods-list">
+                        <colgroup>
+                            <col style={{ width: '40px' }} />
+                            <col style={{ width: '60px' }} />
+                            <col style={{ width: '100px' }} />
+                            <col style={{ width: '150px' }} />
+                            <col style={{ width: '80px' }} />
+                            <col style={{ width: '200px' }} />
+                            <col style={{ width: '80px' }} />
+                            <col style={{ width: '80px' }} />
+                            <col style={{ width: '80px' }} />
+                            <col style={{ width: '100px' }} />
+                            <col style={{ width: '150px' }} />
+                        </colgroup>
+                        <thead>
+                            <tr className="table-row">
+                                <th>
+                                    <input
+                                        type="checkbox"
+                                        name="checkAll"
+                                        id="checkAll"
+                                        onChange={triggerSelectAll}
+                                        checked={selectedProducts.length === data.length && data.length > 0}
+                                    />
+                                </th>
+                                <th>ID</th>
+                                <th>Vieta</th>
+                                <th>Pavadinimas</th>
+                                <th>Nuotrauka</th>
+                                <th>Plati informacija</th>
+                                <th>Mat. vnt.</th>
+                                <th>Kaina</th>
+                                <th>Kiekis</th>
+                                <th>Įspėjimo riba</th>
+                                <th>Pridėjimo data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((item, index) => {
+                                const isSelected = selectedProducts.includes(item.id);
+                                const isEditable = isEditing && isSelected;
+                                return (
+                                    <tr key={index}>
+                                        <td>
                                             <input
-                                                type="text"
-                                                value={editedProducts[item.id]?.location || ''}
-                                                onChange={(e) => handleInputChange(item.id, 'location', e.target.value)}
-                                                className="editable-input"
+                                                type="checkbox"
+                                                checked={isSelected}
+                                                onChange={() => handleCheckboxChange(item.id)}
                                             />
-                                        ) : (
-                                            item.location
-                                        )}
-                                    </td>
-                                    <td>
-                                        {isEditable ? (
-                                            <input
-                                                type="text"
-                                                value={editedProducts[item.id]?.name || ''}
-                                                onChange={(e) => handleInputChange(item.id, 'name', e.target.value)}
-                                                className="editable-input"
-                                            />
-                                        ) : (
-                                            item.name
-                                        )}
-                                    </td>
-                                    <td>
-                                        {isEditable ? (
-                                            <div>
+                                        </td>
+                                        <td>{item.id}</td>
+                                        <td>
+                                            {isEditable ? (
                                                 <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    onChange={(e) => handleImageChange(item.id, e.target.files[0])}
+                                                    type="text"
+                                                    value={editedProducts[item.id]?.location || ''}
+                                                    onChange={(e) => handleInputChange(item.id, 'location', e.target.value)}
+                                                    className="editable-input"
                                                 />
-                                                {editedProducts[item.id]?.photo && (
+                                            ) : (
+                                                item.location
+                                            )}
+                                        </td>
+                                        <td>
+                                            {isEditable ? (
+                                                <input
+                                                    type="text"
+                                                    value={editedProducts[item.id]?.name || ''}
+                                                    onChange={(e) => handleInputChange(item.id, 'name', e.target.value)}
+                                                    className="editable-input"
+                                                />
+                                            ) : (
+                                                item.name
+                                            )}
+                                        </td>
+                                        <td>
+                                            {isEditable ? (
+                                                <div>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(e) => handleImageChange(item.id, e.target.files[0])}
+                                                    />
+                                                    {editedProducts[item.id]?.photo && (
+                                                        <img
+                                                            src={editedProducts[item.id].photo}
+                                                            alt=""
+                                                            style={{ maxWidth: '100%', height: 'auto' }}
+                                                        />
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                item.photo && (
                                                     <img
-                                                        src={editedProducts[item.id].photo}
+                                                        src={item.photo}
                                                         alt=""
                                                         style={{ maxWidth: '100%', height: 'auto' }}
                                                     />
-                                                )}
-                                            </div>
-                                        ) : (
-                                            item.photo && (
-                                                <img
-                                                    src={item.photo}
-                                                    alt=""
-                                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                                )
+                                            )}
+                                        </td>
+                                        <td>
+                                            {Object.keys(item.more_info).map((attribute, idx) => (
+                                                <div className="more-info" key={idx}>
+                                                    {item.more_info[attribute]}
+                                                </div>
+                                            ))}
+                                        </td>
+                                        <td>
+                                            {isEditable ? (
+                                                <input
+                                                    type="text"
+                                                    value={editedProducts[item.id]?.unit || ''}
+                                                    onChange={(e) => handleInputChange(item.id, 'unit', e.target.value)}
+                                                    className="editable-input"
                                                 />
-                                            )
-                                        )}
-                                    </td>
-                                    <td>
-                                        {Object.keys(item.more_info).map((attribute, idx) => (
-                                            <div className="more-info" key={idx}>
-                                                {item.more_info[attribute]}
-                                            </div>
-                                        ))}
-                                    </td>
-                                    <td>
-                                        {isEditable ? (
-                                            <input
-                                                type="text"
-                                                value={editedProducts[item.id]?.unit || ''}
-                                                onChange={(e) => handleInputChange(item.id, 'unit', e.target.value)}
-                                                className="editable-input"
-                                            />
-                                        ) : (
-                                            item.unit
-                                        )}
-                                    </td>
-                                    <td>
-                                        {isEditable ? (
-                                            <input
-                                                type="number"
-                                                value={editedProducts[item.id]?.price || ''}
-                                                onChange={(e) => handleInputChange(item.id, 'price', e.target.value)}
-                                                className="editable-input"
-                                            />
-                                        ) : (
-                                            item.price
-                                        )}
-                                    </td>
-                                    <td>
-                                        {isEditable ? (
-                                            <input
-                                                type="number"
-                                                value={editedProducts[item.id]?.count || ''}
-                                                onChange={(e) => handleInputChange(item.id, 'count', e.target.value)}
-                                                className="editable-input"
-                                            />
-                                        ) : (
-                                            item.count
-                                        )}
-                                    </td>
-                                    <td>
-                                        {isEditable ? (
-                                            <input
-                                                type="number"
-                                                value={editedProducts[item.id]?.alert_level || ''}
-                                                onChange={(e) => handleInputChange(item.id, 'alert_level', e.target.value)}
-                                                className="editable-input"
-                                            />
-                                        ) : (
-                                            item.alert_level
-                                        )}
-                                    </td>
-                                    <td>{item.created_at}</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                            ) : (
+                                                item.unit
+                                            )}
+                                        </td>
+                                        <td>
+                                            {isEditable ? (
+                                                <input
+                                                    type="number"
+                                                    value={editedProducts[item.id]?.price || ''}
+                                                    onChange={(e) => handleInputChange(item.id, 'price', e.target.value)}
+                                                    className="editable-input"
+                                                />
+                                            ) : (
+                                                item.price
+                                            )}
+                                        </td>
+                                        <td>
+                                            {isEditable ? (
+                                                <input
+                                                    type="number"
+                                                    value={editedProducts[item.id]?.count || ''}
+                                                    onChange={(e) => handleInputChange(item.id, 'count', e.target.value)}
+                                                    className="editable-input"
+                                                />
+                                            ) : (
+                                                item.count
+                                            )}
+                                        </td>
+                                        <td>
+                                            {isEditable ? (
+                                                <input
+                                                    type="number"
+                                                    value={editedProducts[item.id]?.alert_level || ''}
+                                                    onChange={(e) => handleInputChange(item.id, 'alert_level', e.target.value)}
+                                                    className="editable-input"
+                                                />
+                                            ) : (
+                                                item.alert_level
+                                            )}
+                                        </td>
+                                        <td>{item.created_at}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div className="inventory-bottom">
                 {enableAddToOrder && (
@@ -460,18 +462,16 @@ const InventoryList = ({ enableAddToOrder, onAddToOrder, refresher }) => {
                 >
                     Pašalinti
                 </div>
-            </div>
-            {isEditing && (
-                <div className="save-container">
+                {isEditing && (
                     <button
-                        className="save-button"
+                        className="option-button hover-darken clickable"
                         onClick={handleSave}
                         disabled={isSaving}
                     >
-                        {isSaving ? 'Saving...' : 'Save'}
+                        {isSaving ? 'Saugoma...' : 'Išsaugoti'}
                     </button>
-                </div>
             )}
+            </div>
         </div>
     );
 };
