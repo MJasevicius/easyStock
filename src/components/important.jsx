@@ -46,9 +46,7 @@ const Important = () => {
         });
 
         // console.log(`Stagnant: ${JSON.stringify(stagnantProducts)}`);
-        
-        stagnantProducts = [...stagnantProducts, ...stagnantProducts]
-        stagnantProducts = [...stagnantProducts, ...stagnantProducts]
+
         setCriticalLevel(criticalLevel);
         setStagnant(stagnantProducts);
         console.log(stagnant);
